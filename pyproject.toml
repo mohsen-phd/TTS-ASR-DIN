@@ -12,6 +12,7 @@ torch = "^1.13.1"
 torchvision = "^0.14.1"
 torchaudio = "^0.13.1"
 speechbrain = "^0.5.13"
+sounddevice = "^0.4.6"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -26,7 +27,6 @@ flake8-builtins = "^2.1.0"
 flake8-comprehensions = "^3.10.1"
 flake8-docstrings = "^1.7.0"
 flake8-isort = "^6.0.0"
-flake8-spellcheck = "^0.28.0"
 
 [build-system]
 requires = ["poetry-core"]
