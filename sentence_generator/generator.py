@@ -14,7 +14,7 @@ class Generator:
             "Can you name three opposites  for the word clean?",
             "What are some words with the same meaning as bright?",
             "Is this statement true?  London is a city.",
-            "Do reject  and decline have the same meaning?",
+            "Does reject  and decline have the same meaning?",
             "are reindeer and camels both animals?",
         ]
 
