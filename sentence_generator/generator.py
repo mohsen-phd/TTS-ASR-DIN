@@ -5,7 +5,7 @@ class Generator:
     """This is a class responsible for generating the questions."""
 
     def __init__(self) -> None:
-        """Initilize the method and create the list of sentences."""
+        """Initialize the method and create the list of sentences."""
         self.question_list = [
             "Could you tell me the names of three different animals?",
             "Could you provide me with the names of the three capital cities?",

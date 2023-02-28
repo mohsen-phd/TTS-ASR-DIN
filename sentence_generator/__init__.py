@@ -1,1 +1,1 @@
-"""This is a package for generating quesstions."""
+"""This is a package for generating questions."""
