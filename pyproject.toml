@@ -8,6 +8,10 @@ packages = [{include = "wordnet_hearing_test"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+torch = "^1.13.1"
+torchvision = "^0.14.1"
+torchaudio = "^0.13.1"
+speechbrain = "^0.5.13"
 
 
 [tool.poetry.group.dev.dependencies]
