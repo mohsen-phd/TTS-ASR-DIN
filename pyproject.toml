@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "wordnet-hearing-test"
+version = "0.1.0"
+description = "Hearing test using Wordnet,ASR and TTS"
+authors = ["Mohsen Fatehifar <mohsen.fatehifar@gmail.com>"]
+readme = "README.md"
+packages = [{include = "wordnet_hearing_test"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+flake8 = "^6.0.0"
+mypy = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
