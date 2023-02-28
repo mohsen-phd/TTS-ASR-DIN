@@ -9,12 +9,12 @@ class Generator:
         self.question_list = [
             "Could you tell me the names of three different animals?",
             "Could you provide me with the names of the three capital cities?",
-            "Can you name three sports games?",
+            "Please name three sports",
             "What is the opposite of good?",
-            "Can you name three antonyms for the word clean?",
+            "Can you name three opposites  for the word clean?",
             "What are some words with the same meaning as bright?",
             "Is this statement true?  London is a city.",
-            "Do refuse and decline have the same meaning?",
+            "Do reject  and decline have the same meaning?",
             "are reindeer and camels both animals?",
         ]
 
