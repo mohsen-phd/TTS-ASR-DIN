@@ -14,6 +14,15 @@ python = "^3.10"
 black = "^23.1.0"
 flake8 = "^6.0.0"
 mypy = "^1.0.1"
+pep8-naming = "^0.13.3"
+darglint = "^1.8.1"
+flake8-bandit = "^4.1.1"
+flake8-bugbear = "^23.2.13"
+flake8-builtins = "^2.1.0"
+flake8-comprehensions = "^3.10.1"
+flake8-docstrings = "^1.7.0"
+flake8-isort = "^6.0.0"
+flake8-spellcheck = "^0.28.0"
 
 [build-system]
 requires = ["poetry-core"]
