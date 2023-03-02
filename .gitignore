@@ -1,3 +1,12 @@
+#User
+.vscode/*
+.DS_Store
+
+
+
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,5 +136,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-.vscode/settings.json
-.DS_Store
+
