@@ -13,6 +13,7 @@ torchvision = "^0.14.1"
 torchaudio = "^0.13.1"
 speechbrain = "^0.5.13"
 sounddevice = "^0.4.6"
+pyaudio = "^0.2.13"
 
 
 [tool.poetry.group.dev.dependencies]
