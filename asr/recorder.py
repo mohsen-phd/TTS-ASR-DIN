@@ -7,6 +7,7 @@ import wave
 
 import numpy as np
 import pyaudio
+from loguru import logger
 
 SHORT_NORMALIZE = (
     1.0 / 32768.0
@@ -82,7 +83,7 @@ class Recorder:
         Returns:
             np.ndarray: The recorded sound as an array.
         """
-        print("Noise detected, recording beginning")
+        logger.debug("Noise detected, recording beginning")
         rec = []
         current = time.time()
         end = time.time() + self.timeout_length
@@ -113,8 +114,8 @@ class Recorder:
         wf.setframerate(SAMPLING_RATE)
         wf.writeframes(recording)
         wf.close()
-        print("Written to file: {}".format(filename))
-        print("Returning to listening")
+        logger.debug("Written to file: {}".format(filename))
+        logger.debug("Returning to listening")
 
     def listen(self) -> np.ndarray:
         """Listen for the presence of a sound, and record the sound until it stop.
@@ -122,7 +123,7 @@ class Recorder:
         Returns:
             np.ndarray: The recorded sound as an array.
         """
-        print("Listening beginning")
+        logger.debug("Listening beginning")
         flag = True
         while flag:
             input_sound = self.stream.read(self.chunk)
