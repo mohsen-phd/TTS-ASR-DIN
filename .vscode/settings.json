@@ -1,0 +1,25 @@
+{
+    "python.formatting.provider": "black",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "editor.formatOnSave": true,
+    "cSpell.words": [
+        "frombuffer",
+        "hifi",
+        "HIFIGAN",
+        "hparams",
+        "ljspeech",
+        "pyaudio",
+        "savedir",
+        "sounddevice",
+        "speechbrain",
+        "Tacotron"
+    ],
+    "python.linting.flake8Args": [
+        "--max-line-length=88"
+    ],
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+}
