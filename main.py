@@ -17,9 +17,9 @@ if __name__ == "__main__":
         timeout_length=3,
         save_dir=r"records",
     )
-    for sentence in text_generator.next_item():
+    for question in text_generator.next_item():
         g = GenerateSound(device="cpu")
-        wave = g.get_sound(sentence["question"])
+        wave = g.get_sound(question.question)
         play_sound(wave=wave.squeeze(0), fs=22050)
         file_src = recorder.listen()
         transcribe = ASR.transcribe(file_src)
