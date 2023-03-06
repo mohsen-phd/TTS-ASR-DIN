@@ -127,11 +127,7 @@ class Recorder:
             output=True,
             frames_per_buffer=self.chunk,
         )
-        flag = True
-        while flag:
-            input_sound = self.stream.read(self.chunk)
-            rms_val = self.rms(input_sound)
-            if rms_val > self.rms_threshold:
-                file_address = self.record()
-                flag = False
+
+        file_address = self.record()
+
         return file_address
