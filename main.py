@@ -7,9 +7,11 @@ from sentence_generator.generator import Generator
 from tts.tts import GenerateSound
 from tts.utils import play_sound
 
-if __name__ == "__main__":
+
+def main():
+    """Code entry point."""
     text_generator = Generator()
-    ASR = ASR()
+    asr = ASR()
     recorder = Recorder(
         store=True,
         chunk=1024,
@@ -24,3 +26,8 @@ if __name__ == "__main__":
         file_src = recorder.listen()
         transcribe = ASR.transcribe(file_src)
         logger.debug(transcribe)
+        question.check_answer(transcribe)
+
+
+if __name__ == "__main__":
+    main()
