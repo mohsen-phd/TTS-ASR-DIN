@@ -19,7 +19,7 @@ if __name__ == "__main__":
     )
     for sentence in text_generator.next_item():
         g = GenerateSound(device="cpu")
-        wave = g.get_sound(sentence)
+        wave = g.get_sound(sentence["question"])
         play_sound(wave=wave.squeeze(0), fs=22050)
         file_src = recorder.listen()
         transcribe = ASR.transcribe(file_src)
