@@ -35,7 +35,7 @@ class NameObjectQuestions(Questions):
     """Class to model this type of questions."""
 
     def check_answer(self, answer: str):
-        """Check answer b ased on patient response and type of question.
+        """Check answer based on patient response and type of question.
 
         Args:
             answer (str): patient response
@@ -47,7 +47,7 @@ class OppositeQuestions(Questions):
     """Class to model this type of questions."""
 
     def check_answer(self, answer: str):
-        """Check answer b ased on patient response and type of question.
+        """Check answer based on patient response and type of question.
 
         Args:
             answer (str): patient response
@@ -59,7 +59,7 @@ class SynonymQuestions(Questions):
     """Class to model this type of questions."""
 
     def check_answer(self, answer: str):
-        """Check answer b ased on patient response and type of question.
+        """Check answer based on patient response and type of question.
 
         Args:
             answer (str): patient response
@@ -71,7 +71,7 @@ class SameCategoryQuestions(Questions):
     """Class to model this type of questions."""
 
     def check_answer(self, answer: str):
-        """Check answer b ased on patient response and type of question.
+        """Check answer based on patient response and type of question.
 
         Args:
             answer (str): patient response
@@ -83,7 +83,7 @@ class StatementQuestions(Questions):
     """Class to model this type of questions."""
 
     def check_answer(self, answer: str):
-        """Check answer b ased on patient response and type of question.
+        """Check answer based on patient response and type of question.
 
         Args:
             answer (str): patient response
