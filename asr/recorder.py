@@ -68,20 +68,12 @@ class Recorder:
         self.chunk = chunk
         self.rms_threshold = rms_threshold
         self.save_dir = save_dir
-        self.stream = self.p.open(
-            format=FORMAT,
-            channels=CHANNELS,
-            rate=SAMPLING_RATE,
-            input=True,
-            output=True,
-            frames_per_buffer=self.chunk,
-        )
 
-    def record(self) -> np.ndarray:
+    def record(self) -> str:
         """Listen to microphone and record as long as sound is present.
 
         Returns:
-            np.ndarray: The recorded sound as an array.
+            str: Address of saved file.
         """
         logger.debug("Noise detected, recording beginning")
         rec = []
@@ -92,19 +84,22 @@ class Recorder:
             data = self.stream.read(self.chunk)
             if self.rms(data) >= self.rms_threshold:
                 end = time.time() + self.timeout_length
-
             current = time.time()
             rec.append(data)
         sound = b"".join(rec)
+        address = ""
         if self.store:
-            self.write(sound)
-        return np.frombuffer(sound)
+            address = self.write(sound)
+        return address
 
-    def write(self, recording: bytes):
+    def write(self, recording: bytes) -> str:
         """Write the recorded sound as a WAV file.
 
         Args:
             recording (bytes): Recorded sound
+
+        Returns:
+            str: Address of saved file.
         """
         n_files = len(os.listdir(self.save_dir))
         filename = os.path.join(self.save_dir, "{}.wav".format(n_files))
@@ -115,7 +110,7 @@ class Recorder:
         wf.writeframes(recording)
         wf.close()
         logger.debug("Written to file: {}".format(filename))
-        logger.debug("Returning to listening")
+        return filename
 
     def listen(self) -> np.ndarray:
         """Listen for the presence of a sound, and record the sound until it stop.
@@ -123,12 +118,20 @@ class Recorder:
         Returns:
             np.ndarray: The recorded sound as an array.
         """
-        logger.debug("Listening beginning")
+        logger.debug("Start Talking")
+        self.stream = self.p.open(
+            format=FORMAT,
+            channels=CHANNELS,
+            rate=SAMPLING_RATE,
+            input=True,
+            output=True,
+            frames_per_buffer=self.chunk,
+        )
         flag = True
         while flag:
             input_sound = self.stream.read(self.chunk)
             rms_val = self.rms(input_sound)
             if rms_val > self.rms_threshold:
-                recorded = self.record()
+                file_address = self.record()
                 flag = False
-        return recorded
+        return file_address
