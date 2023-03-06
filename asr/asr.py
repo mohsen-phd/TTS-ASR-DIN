@@ -1,4 +1,7 @@
 """Run ASR and convert audio to text."""
+import os
+
+from loguru import logger
 from speechbrain.pretrained import EncoderDecoderASR
 
 
@@ -22,4 +25,9 @@ class ASR:
             str: transcribe of the file.
         """
         result = self.asr_model.transcribe_file(src)
+        basename = os.path.basename(src)
+        try:
+            os.remove(basename)
+        except OSError:
+            logger.warning(f"{basename} not found.")
         return result
