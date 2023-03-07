@@ -24,7 +24,7 @@ def main():
         wave = g.get_sound(question.question)
         play_sound(wave=wave.squeeze(0), fs=22050)
         file_src = recorder.listen()
-        transcribe = ASR.transcribe(file_src)
+        transcribe = asr.transcribe(file_src)
         logger.debug(transcribe)
         question.check_answer(transcribe)
 
