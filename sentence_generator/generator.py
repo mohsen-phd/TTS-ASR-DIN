@@ -36,7 +36,9 @@ class Generator:
                 "Is this statement true?  London is a city.", ["london"], "city"
             ),
             SynonymQuestions(
-                "Does reject  and decline have the same meaning?", ["reject", "decline"]
+                "Does reject  and decline have the same meaning?",
+                ["reject", "decline"],
+                self_check=True,
             ),
             SameCategoryQuestions(
                 "are reindeer and camels both animals?",
