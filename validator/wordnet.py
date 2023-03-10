@@ -2,7 +2,7 @@
 import nltk
 from nltk.corpus import wordnet as wn
 from nltk.stem import WordNetLemmatizer
-from parse_patient_response import YesNoAnswer
+from parse_patient_response import Extractor
 
 nltk.download("wordnet")
 nltk.download("omw-1.4")
@@ -23,7 +23,9 @@ class Wordnet:
         """
         return [lemmatizer.lemmatize(word) for word in words]
 
-    def synonym_check(self, answer: str, question_main_words: list, self_check: bool):
+    def synonym_check(
+        self, answer: str, question_main_words: list, self_check: bool
+    ) -> bool:
         """Check the answer of the synonym question.
 
             Extract words from user response and compare
@@ -36,7 +38,7 @@ class Wordnet:
                 synonym or it should check if words givven by the patient is
                 synonyms of the words in the question.
         """
-        yes_no_checker = YesNoAnswer()
+        extractor = Extractor()
         is_synonym_truth = False
         lemma_words = self._get_lemma(question_main_words)
 
@@ -50,13 +52,17 @@ class Wordnet:
                     ):
                         is_synonym_truth = True
 
-        answer = yes_no_checker.extract(answer=answer)
-        if answer is None:
-            print("bad Input")
-        if answer["agree"] == is_synonym_truth:
-            print("OK")
-        else:
-            print("No")
+            answer = extractor.yes_no_extractor(answer=answer)
+
+            if answer is None:
+                print("bad Input")
+            if answer["agree"] == is_synonym_truth:
+                print("OK")
+            else:
+                print("No")
+        # todo: finish this function by adding synonym chech for condition when we want
+        # to check for the condition when the similarity is checked between a word and
+        # the one words in the patients response.
 
 
 w = Wordnet()
