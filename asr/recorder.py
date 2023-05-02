@@ -112,11 +112,11 @@ class Recorder:
         logger.debug("Written to file: {}".format(filename))
         return filename
 
-    def listen(self) -> np.ndarray:
+    def listen(self) -> str:
         """Listen for the presence of a sound, and record the sound until it stop.
 
         Returns:
-            np.ndarray: The recorded sound as an array.
+            str: Address of recorded file.
         """
         logger.debug("Start Talking")
         self.stream = self.p.open(
