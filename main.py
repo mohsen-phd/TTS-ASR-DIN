@@ -19,14 +19,16 @@ def main():
         timeout_length=3,
         save_dir=r"records",
     )
+    sound_generator = GenerateSound(device="cpu")
+
     for question in text_generator.next_item():
-        g = GenerateSound(device="cpu")
-        wave = g.get_sound(question.question)
+        wave = sound_generator.get_sound(question.question)
         play_sound(wave=wave.squeeze(0), fs=22050)
         file_src = recorder.listen()
         transcribe = asr.transcribe(file_src)
         logger.debug(transcribe)
-        question.check_answer(transcribe)
+        matched = question.check_answer(transcribe)
+        print(matched)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,35 @@
+Wordnet Questions:
+[
+            NameObjectQuestions(
+                "Could you tell me the names of three different animals?", ["animal"]
+            ),
+            NameObjectQuestions(
+                "Could you provide me with the names of the three capital cities?",
+                ["cities"],
+            ),
+            NameObjectQuestions("Please name three sports", ["sport"]),
+            OppositeQuestions("What is the opposite of good?", ["good"]),
+            OppositeQuestions(
+                "Can you name three opposites  for the word clean?", ["clean"]
+            ),
+            SynonymQuestions(
+                "What are some words with the same meaning as bright?", ["bright"]
+            ),
+            StatementQuestions(
+                "Is this statement true?  London is a city.", ["london"], "city"
+            ),
+            SynonymQuestions(
+                "Does reject  and decline have the same meaning?",
+                ["reject", "decline"],
+                self_check=True,
+            ),
+            SameCategoryQuestions(
+                "are reindeer and camels both animals?",
+                ["reindeer", "camels"],
+                "animals",
+            ),
+        ]
+
+
+Digit in Noise:
+

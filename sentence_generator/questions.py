@@ -6,7 +6,7 @@ class Questions(ABC):
     """Abstract class for questions. Each type of question must use this api."""
 
     def __init__(
-        self, question: str, main_words: list[str], category: str = None
+        self, question: str, main_words: list[str] = None, category: str = None
     ) -> None:
         """Initialize the questions object by storing the text of the question.
 
@@ -22,13 +22,34 @@ class Questions(ABC):
         self.category = category
 
     @abstractmethod
-    def check_answer(self, answer: str):
+    def check_answer(self, answer: str) -> bool:
         """Based on question type, check if the answer is correct or not.
 
         Args:
             answer (str): answer to the question givern by the patient.
+
+        Returns:
+            bool: Is a match or not.
         """
         pass
+
+
+class DigitQuestions(Questions):
+    """Class for modeling digit-in-noise test questions."""
+
+    def check_answer(self, answer: str) -> bool:
+        """Check the given number is the same as the one  presented to the patient.
+
+        Args:
+            answer (str): The patient's response.
+
+        Returns:
+            bool: Is a match or not.
+        """
+        if self.main_words[0].lower() in answer.lower():
+            return True
+        else:
+            return False
 
 
 class NameObjectQuestions(Questions):
