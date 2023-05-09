@@ -6,7 +6,7 @@ from collections.abc import Iterator
 from sentence_generator.questions import DigitQuestions, Questions
 
 
-class Generator:
+class QuestionGenerator:
     """This is a class responsible for generating the questions."""
 
     def __init__(self) -> None:
