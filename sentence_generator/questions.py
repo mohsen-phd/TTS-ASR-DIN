@@ -5,21 +5,17 @@ from abc import ABC, abstractmethod
 class Questions(ABC):
     """Abstract class for questions. Each type of question must use this api."""
 
-    def __init__(
-        self, question: str, main_words: list[str] = None, category: str = None
-    ) -> None:
+    def __init__(self, question: str, main_words: list[str]) -> None:
         """Initialize the questions object by storing the text of the question.
 
         Args:
             question (str): question to store.
             main_words (list[str]): words of interest in the sentence that should
                 be used to infer answer from WordNet.
-            category (str): Word category to check against WordNet.
         """
         self.question = question
         self.answer: str = ""
         self.main_words = main_words
-        self.category = category
 
     @abstractmethod
     def check_answer(self, answer: str) -> bool:
@@ -96,12 +92,14 @@ class SynonymQuestions(Questions):
             self_check (bool): check if main_words are synonym,
                 or the synonym is given by the patient.
         """
-        super().__init__(question, main_words, category)
+        super().__init__(question, main_words)
         self.self_check = self_check
+        self.category = category
 
     def check_answer(
         self,
         answer: str,
+        self_check: bool,
     ):
         """Check answer based on patient response and type of question.
 
