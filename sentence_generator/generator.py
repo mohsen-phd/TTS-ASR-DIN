@@ -21,7 +21,7 @@ class Generator:
                 "Five",
                 "six",
                 "seven",
-                "eight",    
+                "eight",
                 "nine",
             ]
         ]

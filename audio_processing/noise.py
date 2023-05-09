@@ -7,12 +7,12 @@ class Noise:
     """A class for generating random gussian noise with specific db."""
 
     @staticmethod
-    def generate_noise(signal: np.ndarray, desired_snr_db: np.ndarray) -> np.ndarray:
+    def generate_noise(signal: np.ndarray, desired_snr_db: float) -> np.ndarray:
         """Generate a random gaussian noise signal with a specific SNR.
 
         Args:
             signal (np.ndarray): numpy array containing the signal.
-            desired_snr_db (np.ndarray): desired SNR of the noise relative
+            desired_snr_db (float): desired SNR of the noise relative
                                             to the signal in dB.
 
         Returns:
