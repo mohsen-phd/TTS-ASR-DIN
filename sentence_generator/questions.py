@@ -17,7 +17,7 @@ class Questions(ABC):
             category (str): Word category to check against WordNet.
         """
         self.question = question
-        self.answer: str = None
+        self.answer: str = ""
         self.main_words = main_words
         self.category = category
 
@@ -83,7 +83,7 @@ class SynonymQuestions(Questions):
         self,
         question: str,
         main_words: list[str],
-        category: str = None,
+        category: str,
         self_check: bool = False,
     ) -> None:
         """Initialize the questions object by storing the text of the question.
