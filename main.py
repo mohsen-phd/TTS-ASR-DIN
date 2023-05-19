@@ -5,15 +5,12 @@ from asr.asr import ASR
 from asr.recorder import Recorder
 from audio_processing.noise import Noise
 from hearing_test.test_logic import DigitInNoise
-from sentence_generator.generator import QuestionGenerator
-from sentence_generator.questions import Questions
+from sentence_generator.questions import DigitQuestions, Questions
 from tts.tts import GenerateSound
 from tts.utils import play_sound
 
 
-def initialize() -> (
-    tuple[DigitInNoise, QuestionGenerator, ASR, Recorder, GenerateSound]
-):
+def initialize() -> tuple[DigitInNoise, Questions, ASR, Recorder, GenerateSound]:
     """Initialize the hearing test and other modules.
 
     Returns:
@@ -26,7 +23,7 @@ def initialize() -> (
         reversal_limit=10,
     )
 
-    question_generator = QuestionGenerator()
+    stimuli_generator = DigitQuestions()
 
     asr = ASR()
 
@@ -40,18 +37,18 @@ def initialize() -> (
 
     sound_generator = GenerateSound(device="cpu")
 
-    return hearing_test, question_generator, asr, recorder, sound_generator
+    return hearing_test, stimuli_generator, asr, recorder, sound_generator
 
 
-def play_stimuli(sound_generator: GenerateSound, snr_db: int, question: Questions):
+def play_stimuli(sound_generator: GenerateSound, snr_db: int, stimuli: str):
     """Play the stimuli to the patient.
 
     Args:
         sound_generator (GenerateSound): object to generate sound using a TTS.
         snr_db (int): signal to noise ratio in db.
-        question (Questions): The stimuli to play.
+        stimuli (str): The stimuli to play.
     """
-    sound_wave = sound_generator.get_sound(question.question).squeeze(0)
+    sound_wave = sound_generator.get_sound(stimuli).squeeze(0)
     noise = Noise.generate_noise(sound_wave, snr_db)
     noisy_wave = sound_wave + noise
     play_sound(wave=noisy_wave, fs=22050)
@@ -75,16 +72,17 @@ def listen(asr: ASR, recorder: Recorder) -> str:
 
 def main():
     """Code entry point."""
-    hearing_test, question_generator, asr, recorder, sound_generator = initialize()
+    hearing_test, stimuli_generator, asr, recorder, sound_generator = initialize()
 
     snr_db = 5
     correct_count = incorrect_count = 0
-    for _, question in enumerate(question_generator.next_item()):
+    while not hearing_test.stop_condition():
+        question = stimuli_generator.get_stimuli()
         play_stimuli(sound_generator, snr_db, question)
 
         transcribe = listen(asr, recorder)
 
-        matched = question.check_answer(transcribe)
+        matched = stimuli_generator.check_answer(transcribe)
         logger.info(f"Matched: {matched}")
 
         if matched:
@@ -93,7 +91,7 @@ def main():
             incorrect_count += 1
 
         new_snr_db = hearing_test.get_next_snr(correct_count, incorrect_count, snr_db)
-
+        logger.info(f"New SNR: {new_snr_db}")
         if new_snr_db != snr_db:
             snr_db = new_snr_db
             correct_count = incorrect_count = 0
