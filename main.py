@@ -17,10 +17,13 @@ def initialize() -> (
     """Initialize the hearing test and other modules.
 
     Returns:
-        tuple: Return the hearing test, question generator, asr, recorder and sound
+        tuple: Return the hearing te`st, question generator, asr, recorder and sound
     """
     hearing_test = DigitInNoise(
-        correct_threshold=2, incorrect__threshold=1, step_size=[5, 3, 1]
+        correct_threshold=2,
+        incorrect_threshold=1,
+        step_size=[5, 3, 1],
+        reversal_limit=10,
     )
 
     question_generator = QuestionGenerator()
@@ -76,15 +79,24 @@ def main():
 
     snr_db = 5
     correct_count = incorrect_count = 0
-    for idx, question in enumerate(question_generator.next_item()):
+    for _, question in enumerate(question_generator.next_item()):
         play_stimuli(sound_generator, snr_db, question)
 
         transcribe = listen(asr, recorder)
 
         matched = question.check_answer(transcribe)
-        logger.debug(f"Matched: {matched}")
+        logger.info(f"Matched: {matched}")
 
-        snr_db = hearing_test.get_next_snr(correct_count, incorrect_count, idx)
+        if matched:
+            correct_count += 1
+        else:
+            incorrect_count += 1
+
+        new_snr_db = hearing_test.get_next_snr(correct_count, incorrect_count, snr_db)
+
+        if new_snr_db != snr_db:
+            snr_db = new_snr_db
+            correct_count = incorrect_count = 0
 
 
 if __name__ == "__main__":
