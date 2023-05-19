@@ -1,6 +1,6 @@
 """Module for storing question and their validation method."""
-from abc import ABC, abstractmethod
 import random
+from abc import ABC, abstractmethod
 
 
 class Questions(ABC):

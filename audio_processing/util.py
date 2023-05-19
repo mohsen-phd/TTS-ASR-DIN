@@ -22,3 +22,46 @@ def calculate_snr_db(signal: np.ndarray, noise: np.ndarray) -> float:
     snr_db = 10 * np.log10(signal_power / noise_power)
 
     return snr_db
+
+
+def calculate_db_spl(signal: np.ndarray) -> float:
+    """Calculate dB SPL of a signal.
+
+    Args:
+        signal (np.ndarray): input signal.
+
+    Returns:
+        float: loudness of the signal in dB SPL.
+    """
+    # Calculate the RMS of the signal
+    rms = np.sqrt(np.mean(signal**2))
+
+    # Calculate the dB SPL
+    db_spl = 20 * np.log10(rms / 20e-6)
+
+    return db_spl
+
+
+def convert_to_specific_db_spl(signal: np.ndarray, target_level: float) -> np.ndarray:
+    """Get a signal and change it's loudness to a specific dB SPL.
+
+    Args:
+        signal (np.ndarray): inout signal.
+        target_level (float): desired loudness in dB SPL.
+
+    Returns:
+        np.ndarray: signal with the desired loudness.
+    """
+    # Calculate the current loudness of the signal
+    current_level = calculate_db_spl(signal)
+
+    # Calculate the difference between the current and desired loudness
+    diff = target_level - current_level
+
+    # Calculate the factor to multiply the signal by
+    factor = 10 ** (diff / 20)
+
+    # Multiply the signal by the factor
+    signal = signal * factor
+    print(f"Current level: {calculate_db_spl(signal):.2f} dB SPL")
+    return signal

@@ -27,7 +27,7 @@ class ASR:
         result = self.asr_model.transcribe_file(src)
         basename = os.path.basename(src)
         try:
-            os.remove(basename)
-        except OSError:
+            os.remove(src)
+        except FileNotFoundError:
             logger.warning(f"{basename} not found.")
         return result

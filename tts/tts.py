@@ -2,6 +2,8 @@
 import numpy as np
 from speechbrain.pretrained import HIFIGAN, Tacotron2
 
+from audio_processing.util import convert_to_specific_db_spl
+
 
 class GenerateSound:
     """Class for generating waveform from string."""
@@ -25,7 +27,7 @@ class GenerateSound:
         )
 
     def get_sound(self, text: str) -> np.ndarray:
-        """Get an input text and generate the corresponding wave form.
+        """Get a text and generate the corresponding sound with loudness of 65 dB SPL.
 
         Args:
             text (str): input string
@@ -37,4 +39,6 @@ class GenerateSound:
 
         # Running Vocoder (spectrogram-to-waveform)
         waveforms = self.hifi_gan.decode_batch(mel_output)
-        return waveforms.to("cpu").squeeze(1).numpy()
+        sound = waveforms.to("cpu").squeeze(1).numpy()
+        sound = convert_to_specific_db_spl(sound, 65)
+        return sound
