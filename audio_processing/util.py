@@ -2,6 +2,18 @@
 import numpy as np
 
 
+def rms_power(signal: np.ndarray) -> float:
+    """Calculate the RMS power of a signal.
+
+    Args:
+        signal (np.ndarray): numpy array containing the signal.
+
+    Returns:
+        float: float containing the RMS power of the signal.
+    """
+    return np.sqrt(np.mean(signal**2))
+
+
 def calculate_snr_db(signal: np.ndarray, noise: np.ndarray) -> float:
     """Calculate the SNR in dB of a signal relative to a noise.
 
@@ -13,10 +25,10 @@ def calculate_snr_db(signal: np.ndarray, noise: np.ndarray) -> float:
         float: float containing the SNR in dB of the signal relative to the noise.
     """
     # Calculate the power of the signal
-    signal_power = np.sum(signal**2) / len(signal)
+    signal_power = rms_power(signal=signal)
 
     # Calculate the power of the noise
-    noise_power = np.sum(noise**2) / len(noise)
+    noise_power = rms_power(signal=noise)
 
     # Calculate the SNR in dB
     snr_db = 10 * np.log10(signal_power / noise_power)
@@ -34,7 +46,7 @@ def calculate_db_spl(signal: np.ndarray) -> float:
         float: loudness of the signal in dB SPL.
     """
     # Calculate the RMS of the signal
-    rms = np.sqrt(np.mean(signal**2))
+    rms = rms_power(signal=signal)
 
     # Calculate the dB SPL
     db_spl = 20 * np.log10(rms / 20e-6)

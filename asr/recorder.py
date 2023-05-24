@@ -5,7 +5,6 @@ import struct
 import time
 import wave
 
-import numpy as np
 import pyaudio
 from loguru import logger
 
@@ -15,7 +14,7 @@ SHORT_NORMALIZE = (
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-SAMPLING_RATE = 16000
+SAMPLING_RATE = 44100
 sample_width = 2
 
 

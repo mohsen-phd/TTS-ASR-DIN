@@ -2,9 +2,11 @@
 
 import numpy as np
 
+from audio_processing.util import rms_power
+
 
 class Noise:
-    """A class for generating random gussian noise with specific db."""
+    """A class for generating random gaussian noise with specific db."""
 
     @staticmethod
     def generate_noise(signal: np.ndarray, desired_snr_db: float) -> np.ndarray:
@@ -18,13 +20,13 @@ class Noise:
         Returns:
             np.ndarray: numpy array containing the noise signal.
         """
-        signal_power = np.sum(signal**2) / len(signal)
+        signal_power = rms_power(signal=signal)
 
         # Calculate the power of the noise required to achieve the desired SNR in dB
-        desired_snr = 10 ** (desired_snr_db / 10)
+        desired_snr = np.sqrt(10 ** (desired_snr_db / 20))
         noise_power = signal_power / desired_snr
 
         # Generate the noise signal with the calculated power
-        noise = np.random.normal(scale=np.sqrt(noise_power), size=len(signal))
+        noise = np.random.normal(scale=noise_power, size=len(signal))
 
         return noise
