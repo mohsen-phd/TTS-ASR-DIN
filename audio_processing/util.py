@@ -31,7 +31,7 @@ def calculate_snr_db(signal: np.ndarray, noise: np.ndarray) -> float:
     noise_power = rms_power(signal=noise)
 
     # Calculate the SNR in dB
-    snr_db = 10 * np.log10(signal_power / noise_power)
+    snr_db = 20 * np.log10(signal_power / noise_power)
 
     return snr_db
 
