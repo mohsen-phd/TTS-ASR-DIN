@@ -27,4 +27,5 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "git.suggestSmartCommit": false,
+    "git.enableSmartCommit": false
 }
