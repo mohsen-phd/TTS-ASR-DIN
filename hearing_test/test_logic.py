@@ -1,5 +1,6 @@
 """Class to govern the logic of the hearing test."""
 
+from abc import ABC, abstractmethod
 from enum import Enum
 
 
@@ -11,7 +12,38 @@ class STATUS(Enum):
     DECREASE = 2
 
 
-class DigitInNoise:
+class HearingTest(ABC):
+    """Interface for the hearing test."""
+
+    @abstractmethod
+    def get_next_snr(
+        self, correct_count: int, incorrect_count: int, snr_db: int
+    ) -> int:
+        """Get the next SNR value.
+
+        The SNR value is calculated based on the number of correct and incorrect.
+
+        Args:
+            correct_count (int): the number of correct answers
+            incorrect_count (int): the number of incorrect answers
+            snr_db (int): the current snr value
+
+        Returns:
+            int: new snr to use
+        """
+        ...
+
+    @abstractmethod
+    def stop_condition(self) -> bool:
+        """Check if the test should stop.
+
+        Returns:
+            bool: True if the test should stop, False otherwise.
+        """
+        ...
+
+
+class DigitInNoise(HearingTest):
     """Class to govern the logic of the digit-in-noise test."""
 
     def __init__(
