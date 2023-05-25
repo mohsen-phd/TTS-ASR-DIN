@@ -3,18 +3,19 @@ from loguru import logger
 
 from asr.asr import ASR
 from asr.recorder import Recorder
-from audio_processing.noise import Noise
+from audio_processing.noise import Noise, WhiteNoise
 from hearing_test.test_logic import DigitInNoise
 from sentence_generator.questions import DigitQuestions, Questions
 from tts.tts import GenerateSound
 from tts.utils import play_sound
 
 
-def initialize() -> tuple[DigitInNoise, Questions, ASR, Recorder, GenerateSound]:
+def initialize() -> tuple[DigitInNoise, Questions, ASR, Recorder, GenerateSound, Noise]:
     """Initialize the hearing test and other modules.
 
     Returns:
-        tuple: Return the hearing te`st, question generator, asr, recorder and sound
+        tuple: Return the hearing test, question generator, asr,
+                recorder, sound and noise generator.
     """
     hearing_test = DigitInNoise(
         correct_threshold=2,
@@ -35,27 +36,32 @@ def initialize() -> tuple[DigitInNoise, Questions, ASR, Recorder, GenerateSound]
         save_dir=r"records",
     )
 
+    noise = WhiteNoise()
+
     sound_generator = GenerateSound(device="cpu")
 
-    return hearing_test, stimuli_generator, asr, recorder, sound_generator
+    return hearing_test, stimuli_generator, asr, recorder, sound_generator, noise
 
 
-def play_stimuli(sound_generator: GenerateSound, snr_db: int, stimuli: str):
+def play_stimuli(
+    sound_generator: GenerateSound, snr_db: int, stimuli: str, noise: Noise
+):
     """Play the stimuli to the patient.
 
     Args:
         sound_generator (GenerateSound): object to generate sound using a TTS.
         snr_db (int): signal to noise ratio in db.
         stimuli (str): The stimuli to play.
+        noise (Noise): object to generate noise.
     """
     sound_wave = sound_generator.get_sound(stimuli).squeeze(0)
-    noise = Noise.generate_noise(sound_wave, snr_db)
-    noisy_wave = sound_wave + noise
+    noise_signal = noise.generate_noise(sound_wave, snr_db)
+    noisy_wave = sound_wave + noise_signal
     play_sound(wave=noisy_wave, fs=22050)
 
 
 def listen(asr: ASR, recorder: Recorder) -> str:
-    """Listent to patient response, and transcribe it.
+    """Listen to patient response, and transcribe it.
 
     Args:
         asr (ASR): asr object to transcribe the audio.
@@ -72,13 +78,20 @@ def listen(asr: ASR, recorder: Recorder) -> str:
 
 def main():
     """Code entry point."""
-    hearing_test, stimuli_generator, asr, recorder, sound_generator = initialize()
+    (
+        hearing_test,
+        stimuli_generator,
+        asr,
+        recorder,
+        sound_generator,
+        noise,
+    ) = initialize()
 
     snr_db = 5
     correct_count = incorrect_count = 0
     while not hearing_test.stop_condition():
         question = stimuli_generator.get_stimuli()
-        play_stimuli(sound_generator, snr_db, question)
+        play_stimuli(sound_generator, snr_db, question, noise)
 
         transcribe = listen(asr, recorder)
 
