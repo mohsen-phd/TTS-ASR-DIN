@@ -1,11 +1,28 @@
 """Convert text to speech."""
+from abc import ABC, abstractmethod
 import numpy as np
 from speechbrain.pretrained import HIFIGAN, Tacotron2
 
 from audio_processing.util import convert_to_specific_db_spl
 
 
-class GenerateSound:
+class TTS(ABC):
+    """Interface for the TTS system."""
+
+    @abstractmethod
+    def get_sound(self, text: str) -> np.ndarray:
+        """Get a text and generate the corresponding sound with loudness of 65 dB SPL.
+
+        Args:
+            text (str): input string
+
+        Returns:
+            np.ndarray: waveform in shape of (1,length_of_wave)
+        """
+        ...
+
+
+class GenerateSound(TTS):
     """Class for generating waveform from string."""
 
     def __init__(self, device: str = "cpu") -> None:

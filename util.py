@@ -1,16 +1,16 @@
 """Utility module for the main script."""
 from loguru import logger
 
-from asr.asr import ASR
+from asr.asr import ASR, ARLibrispeech
 from asr.recorder import Recorder
 from audio_processing.noise import Noise, WhiteNoise
 from hearing_test.test_logic import DigitInNoise, HearingTest
 from sentence_generator.questions import DigitQuestions, Questions
-from tts.tts import GenerateSound
+from tts.tts import TTS, GenerateSound
 from tts.utils import play_sound
 
 
-def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, GenerateSound, Noise]:
+def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise]:
     """Initialize the hearing test and other modules.
 
     Returns:
@@ -26,7 +26,7 @@ def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, GenerateSound, 
 
     stimuli_generator = DigitQuestions()
 
-    asr = ASR()
+    asr = ARLibrispeech()
 
     recorder = Recorder(
         store=True,
@@ -43,13 +43,11 @@ def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, GenerateSound, 
     return hearing_test, stimuli_generator, asr, recorder, sound_generator, noise
 
 
-def play_stimuli(
-    sound_generator: GenerateSound, snr_db: int, stimuli: str, noise: Noise
-):
+def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):
     """Play the stimuli to the patient.
 
     Args:
-        sound_generator (GenerateSound): object to generate sound using a TTS.
+        sound_generator (TTS): object to generate sound using a TTS.
         snr_db (int): signal to noise ratio in db.
         stimuli (str): The stimuli to play.
         noise (Noise): object to generate noise.
