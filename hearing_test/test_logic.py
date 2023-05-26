@@ -115,20 +115,28 @@ class DigitInNoise(HearingTest):
             int: new snr to use
         """
         if correct_count >= self._correct_threshold:
-            if self._is_reversing(STATUS.DECREASE):
-                self._reversal_count += 1
-            self._previous_action = STATUS.DECREASE
-            snr_change = self._get_step_size()
+            snr_change = self._get_snr_change(STATUS.DECREASE)
             return snr_db - snr_change
-
         elif incorrect_count >= self._incorrect_threshold:
-            if self._is_reversing(STATUS.INCREASE):
-                self._reversal_count += 1
-            self._previous_action = STATUS.INCREASE
-            snr_change = self._get_step_size()
+            snr_change = self._get_snr_change(STATUS.INCREASE)
             return snr_db + snr_change
 
         return snr_db
+
+    def _get_snr_change(self, status: STATUS) -> int:
+        """Get the step size of SNR change.
+
+        Args:
+            status (STATUS): Determine if the SNR should increase or decrease.
+
+        Returns:
+            int: how much to change the SNR
+        """
+        if self._is_reversing(status):
+            self._reversal_count += 1
+        self._previous_action = status
+        snr_change = self._get_step_size()
+        return snr_change
 
     def stop_condition(self) -> bool:
         """Check if the test should stop.
