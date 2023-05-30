@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-from audio_processing.util import rms_power
+from audio_processing.util import rms_amplitude
 
 
 class Noise(ABC):
@@ -39,13 +39,13 @@ class WhiteNoise(Noise):
         Returns:
             np.ndarray: numpy array containing the noise signal.
         """
-        signal_power = rms_power(signal=signal)
+        signal_amplitude = rms_amplitude(signal=signal)
 
-        # Calculate the power of the noise required to achieve the desired SNR in dB
+        # Calculate the amplitude of the noise required to achieve the desired SNR in dB
         desired_snr = np.sqrt(10 ** (desired_snr_db / 20))
-        noise_power = signal_power / desired_snr
+        noise_amplitude = signal_amplitude / desired_snr
 
-        # Generate the noise signal with the calculated power
-        noise = np.random.normal(scale=noise_power, size=len(signal))
+        # Generate the noise signal with the calculated amplitude
+        noise = np.random.normal(scale=noise_amplitude, size=len(signal))
 
         return noise

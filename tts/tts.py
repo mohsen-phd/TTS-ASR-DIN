@@ -11,7 +11,7 @@ class TTS(ABC):
 
     @abstractmethod
     def get_sound(self, text: str) -> np.ndarray:
-        """Get a text and generate the corresponding sound with loudness of 65 dB SPL.
+        """Get a text and generate the corresponding sound with level of 65 dB SPL.
 
         Args:
             text (str): input string
@@ -44,7 +44,7 @@ class GenerateSound(TTS):
         )
 
     def get_sound(self, text: str) -> np.ndarray:
-        """Get a text and generate the corresponding sound with loudness of 65 dB SPL.
+        """Get a text and generate the corresponding sound with level of 65 dB SPL.
 
         Args:
             text (str): input string
