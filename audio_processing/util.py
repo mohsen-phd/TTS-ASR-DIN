@@ -1,5 +1,6 @@
 """Utility functions for audio processing."""
 import numpy as np
+from loguru import logger
 
 
 def rms_amplitude(signal: np.ndarray) -> float:
@@ -75,5 +76,5 @@ def convert_to_specific_db_spl(signal: np.ndarray, target_level: float) -> np.nd
 
     # Multiply the signal by the factor
     signal = signal * factor
-    print(f"Current level: {calculate_db_spl(signal):.2f} dB SPL")
+    logger.info(f"Current level: {calculate_db_spl(signal):.2f} dB SPL")
     return signal
