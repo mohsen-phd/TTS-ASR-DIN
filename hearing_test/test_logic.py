@@ -15,6 +15,27 @@ class STATUS(Enum):
 class HearingTest(ABC):
     """Interface for the hearing test."""
 
+    def __init__(self) -> None:
+        """Initialize the HearingTest class."""
+        self._important_snr: list[int] = []
+        self._srt: float
+        super().__init__()
+
+    @property
+    def srt(self) -> float:
+        """Get the SRT value.
+
+        Raises:
+            ValueError: if there is no snr in the important_snr list.
+
+        Returns:
+            float: the SRT value, which is the average of the important_snr(SRTs when
+            the step size is the smallest defined) list.
+        """
+        if len(self._important_snr) == 0:
+            raise ValueError("Not enough data to calculate SRT")
+        return sum(self._important_snr) / len(self._important_snr)
+
     @abstractmethod
     def get_next_snr(
         self, correct_count: int, incorrect_count: int, snr_db: int
@@ -53,7 +74,7 @@ class DigitInNoise(HearingTest):
         step_size: list[int],
         reversal_limit: int,
     ):
-        """Initilize the DigitInNoise class.
+        """Initialize the DigitInNoise class.
 
         Args:
             correct_threshold (int): how many correct answers before decreasing the SNR
@@ -68,6 +89,7 @@ class DigitInNoise(HearingTest):
         self._reversal_count = 0
         self._previous_action = STATUS.INIT
         self._reversal_limit = reversal_limit
+        super().__init__()
 
     def _is_reversing(self, new_status: STATUS) -> bool:
         """Check if the test is reversing.
@@ -104,7 +126,8 @@ class DigitInNoise(HearingTest):
     ) -> int:
         """Get the next SNR value.
 
-        The SNR value is calculated based on the number of correct and incorrect.
+        The SNR value is calculated based on the number of correct and incorrect.And
+        the SNR is stored in the important_snr list if the last step size is being used.
 
         Args:
             correct_count (int): the number of correct answers
@@ -114,14 +137,32 @@ class DigitInNoise(HearingTest):
         Returns:
             int: new snr to use
         """
+        new_snr = snr_db
         if correct_count >= self._correct_threshold:
             snr_change = self._get_snr_change(STATUS.DECREASE)
-            return snr_db - snr_change
+            new_snr = snr_db - snr_change
+
         elif incorrect_count >= self._incorrect_threshold:
             snr_change = self._get_snr_change(STATUS.INCREASE)
-            return snr_db + snr_change
+            new_snr = snr_db + snr_change
+        else:
+            return new_snr
 
-        return snr_db
+        self._update_important_snr(new_snr, snr_change)
+        return new_snr
+
+    def _update_important_snr(self, new_snr: int, snr_change: int) -> None:
+        """Add the new SNR to the list of important SNRs.
+
+        If the snr_change is equal to the last step size defined step size,
+          store the news_str in the important_snr list.
+
+        Args:
+            new_snr (int): The SNR value of current iteration of the test.
+            snr_change (int): The step size for changing the SNR in this iteration.
+        """
+        if snr_change == self._step_size[-1]:
+            self._important_snr.append(new_snr)
 
     def _get_snr_change(self, status: STATUS) -> int:
         """Get the step size of SNR change.
