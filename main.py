@@ -37,6 +37,8 @@ def main():
             snr_db = new_snr_db
             correct_count = incorrect_count = 0
 
+    logger.info(f"SRT: {hearing_test.srt}")
+
 
 if __name__ == "__main__":
     main()
