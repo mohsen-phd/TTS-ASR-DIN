@@ -5,7 +5,7 @@ from asr.asr import ASR, ARLibrispeech
 from asr.recorder import Recorder
 from audio_processing.noise import Noise, WhiteNoise
 from hearing_test.test_logic import DigitInNoise, HearingTest
-from sentence_generator.questions import DigitQuestions, Questions
+from stimuli_generator.questions import DigitQuestions, Questions
 from tts.tts import TTS, GenerateSound
 from tts.utils import play_sound
 
