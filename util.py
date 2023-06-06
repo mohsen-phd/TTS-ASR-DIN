@@ -1,6 +1,7 @@
 """Utility module for the main script."""
 import yaml
 from loguru import logger
+from yaml import YAMLError
 
 from asr.asr import ASR, ARLibrispeech
 from asr.recorder import Recorder
@@ -11,18 +12,24 @@ from tts.tts import TTS, GenerateSound
 from tts.utils import play_sound
 
 
-def read_conf() -> dict:
+def read_conf(src: str = "config.yaml") -> dict:
     """Read the configuration file.
+
+    Args:
+        src (str): Path to the configuration file. Defaults to "config.yaml".
 
     Returns:
         dict: Return the configuration file as a dictionary.
+
+    Raises:
+        YAMLError: If an error occurs while reading or parsing the configuration file.
     """
-    with open("config.yaml", "r") as f:
+    with open(src, "r") as f:
         try:
             return yaml.safe_load(f)
-        except yaml.YAMLError as exc:
+        except YAMLError as exc:
             logger.error(f"Error while reading the configuration file: {exc}")
-    return {}
+            raise exc
 
 
 def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise, int]:
