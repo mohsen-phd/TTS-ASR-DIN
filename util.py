@@ -25,12 +25,12 @@ def read_conf() -> dict:
     return {}
 
 
-def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise]:
+def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise, int]:
     """Initialize the hearing test and other modules.
 
     Returns:
         tuple: Return the hearing test, question generator, asr,
-                recorder, sound and noise generator.
+                recorder, sound, noise generator and the starting level of snr.
     """
     conf = read_conf()
     hearing_test = DigitInNoise(
@@ -56,7 +56,15 @@ def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise]:
 
     sound_generator = GenerateSound(device="cpu")
 
-    return hearing_test, stimuli_generator, asr, recorder, sound_generator, noise
+    return (
+        hearing_test,
+        stimuli_generator,
+        asr,
+        recorder,
+        sound_generator,
+        noise,
+        conf["test"]["start-snr"],
+    )
 
 
 def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):

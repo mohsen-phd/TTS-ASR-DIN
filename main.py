@@ -13,9 +13,10 @@ def main():
         recorder,
         sound_generator,
         noise,
+        start_snr,
     ) = initialize()
 
-    snr_db = 5
+    snr_db = start_snr
     correct_count = incorrect_count = 0
     while not hearing_test.stop_condition():
         question = stimuli_generator.get_stimuli()
