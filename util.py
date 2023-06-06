@@ -1,4 +1,5 @@
 """Utility module for the main script."""
+import yaml
 from loguru import logger
 
 from asr.asr import ASR, ARLibrispeech
@@ -10,6 +11,20 @@ from tts.tts import TTS, GenerateSound
 from tts.utils import play_sound
 
 
+def read_conf() -> dict:
+    """Read the configuration file.
+
+    Returns:
+        dict: Return the configuration file as a dictionary.
+    """
+    with open("config.yaml", "r") as f:
+        try:
+            return yaml.safe_load(f)
+        except yaml.YAMLError as exc:
+            logger.error(f"Error while reading the configuration file: {exc}")
+    return {}
+
+
 def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise]:
     """Initialize the hearing test and other modules.
 
@@ -17,11 +32,12 @@ def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise]:
         tuple: Return the hearing test, question generator, asr,
                 recorder, sound and noise generator.
     """
+    conf = read_conf()
     hearing_test = DigitInNoise(
-        correct_threshold=2,
-        incorrect_threshold=1,
-        step_size=[5, 3, 1],
-        reversal_limit=10,
+        correct_threshold=conf["test"]["correct_threshold"],
+        incorrect_threshold=conf["test"]["incorrect_threshold"],
+        step_size=conf["test"]["step_size"],
+        reversal_limit=conf["test"]["reversal_limit"],
     )
 
     stimuli_generator = DigitQuestions()

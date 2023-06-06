@@ -1,5 +1,6 @@
 """Convert text to speech."""
 from abc import ABC, abstractmethod
+
 import numpy as np
 from speechbrain.pretrained import HIFIGAN, Tacotron2
 
