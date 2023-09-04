@@ -6,7 +6,7 @@ class CaptureResponse(ABC):
     """Interface for the ASR system."""
 
     @abstractmethod
-    def get(self) -> str:
+    def get(self, *args, **kwargs) -> str:
         """Get a wav file address and return the transcription of it.
 
         Returns:

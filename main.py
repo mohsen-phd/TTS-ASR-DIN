@@ -1,12 +1,12 @@
 """Main entry point of the program."""
 from loguru import logger
 
-from util import Initializer, listen, play_stimuli
+from util import TestManager, play_stimuli
 
 
 def main():
     """Code entry point."""
-    manager = Initializer(config_file="config.yaml")
+    manager = TestManager(config_file="config.yaml")
 
     snr_db = manager.start_snr
     correct_count = incorrect_count = 0
@@ -14,7 +14,7 @@ def main():
         question = manager.stimuli_generator.get_stimuli()
         play_stimuli(manager.sound_generator, snr_db, question, manager.noise)
 
-        transcribe = listen(manager.asr, manager.recorder)
+        transcribe = manager.get_response()
 
         matched = manager.stimuli_generator.check_answer(transcribe)
         logger.info(f"Matched: {matched}")

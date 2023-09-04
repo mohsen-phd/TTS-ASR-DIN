@@ -5,6 +5,8 @@ from yaml import YAMLError
 
 from audio_processing.noise import Noise, WhiteNoise
 from get_response.asr import ASR, ARLibrispeech
+from get_response.base import CaptureResponse
+from get_response.cli import CLI
 from get_response.recorder import Recorder
 from hearing_test.test_logic import DigitInNoise
 from stimuli_generator.questions import DigitQuestions
@@ -32,7 +34,7 @@ def read_conf(src: str = "config.yaml") -> dict:
             raise exc
 
 
-class Initializer:
+class TestManager:
     """A class to create the hearing test based on config file."""
 
     def __init__(self, config_file: str) -> None:
@@ -51,7 +53,7 @@ class Initializer:
 
         self.stimuli_generator = DigitQuestions()
 
-        self.asr = self.get_asr()
+        self.response_capturer = self._capture_method()
 
         self.recorder = Recorder(
             store=True,
@@ -67,6 +69,13 @@ class Initializer:
 
         self.start_snr = self.conf["test"]["start_snr"]
 
+    def _capture_method(self) -> CaptureResponse:
+        if self.conf["response_capturing"] == "cli":
+            return CLI()
+        if self.conf["response_capturing"] == "asr":
+            return self.get_asr()
+        raise NotImplementedError
+
     def get_asr(self) -> ASR:
         """Get the proper asr engine based on config file.
 
@@ -78,6 +87,26 @@ class Initializer:
         """
         if self.conf["asr"]["type"] == "ARLibrispeech":
             return ARLibrispeech()
+        raise NotImplementedError
+
+    def get_response(self) -> str:
+        """Get the response from the participant.
+
+        Raises:
+            NotImplementedError: The response capturing method is not implemented.
+
+        Returns:
+            str: Response from the participant.
+        """
+        if self.conf["response_capturing"] == "cli":
+            return self.response_capturer.get()
+
+        if self.conf["response_capturing"] == "asr":
+            file_src = self.recorder.listen()
+            transcribe = self.response_capturer.get(src=file_src)
+            logger.debug(transcribe)
+            return transcribe
+
         raise NotImplementedError
 
 
@@ -94,20 +123,3 @@ def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):
     noise_signal = noise.generate_noise(sound_wave, snr_db)
     noisy_wave = sound_wave + noise_signal
     play_sound(wave=noisy_wave, fs=22050)
-
-
-def listen(asr: ASR, recorder: Recorder) -> str:
-    """Listen to patient response, and transcribe it.
-
-    Args:
-        asr (ASR): asr object to transcribe the audio.
-        recorder (Recorder): object to listen to the patient, and store the audio.
-
-    Returns:
-        str: transcribed text.
-    """
-    file_src = recorder.listen()
-    asr.file_path = file_src
-    transcribe = asr.get()
-    logger.debug(transcribe)
-    return transcribe
