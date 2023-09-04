@@ -1,30 +1,22 @@
 """Main entry point of the program."""
 from loguru import logger
 
-from util import initialize, listen, play_stimuli
+from util import Initializer, listen, play_stimuli
 
 
 def main():
     """Code entry point."""
-    (
-        hearing_test,
-        stimuli_generator,
-        asr,
-        recorder,
-        sound_generator,
-        noise,
-        start_snr,
-    ) = initialize()
+    manager = Initializer(config_file="config.yaml")
 
-    snr_db = start_snr
+    snr_db = manager.start_snr
     correct_count = incorrect_count = 0
-    while not hearing_test.stop_condition():
-        question = stimuli_generator.get_stimuli()
-        play_stimuli(sound_generator, snr_db, question, noise)
+    while not manager.hearing_test.stop_condition():
+        question = manager.stimuli_generator.get_stimuli()
+        play_stimuli(manager.sound_generator, snr_db, question, manager.noise)
 
-        transcribe = listen(asr, recorder)
+        transcribe = listen(manager.asr, manager.recorder)
 
-        matched = stimuli_generator.check_answer(transcribe)
+        matched = manager.stimuli_generator.check_answer(transcribe)
         logger.info(f"Matched: {matched}")
 
         if matched:
@@ -32,13 +24,15 @@ def main():
         else:
             incorrect_count += 1
 
-        new_snr_db = hearing_test.get_next_snr(correct_count, incorrect_count, snr_db)
+        new_snr_db = manager.hearing_test.get_next_snr(
+            correct_count, incorrect_count, snr_db
+        )
         logger.info(f"New SNR: {new_snr_db}")
         if new_snr_db != snr_db:
             snr_db = new_snr_db
             correct_count = incorrect_count = 0
 
-    logger.info(f"SRT: {hearing_test.srt}")
+    logger.info(f"SRT: {manager.hearing_test.srt}")
 
 
 if __name__ == "__main__":

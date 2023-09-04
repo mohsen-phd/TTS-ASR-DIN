@@ -6,8 +6,8 @@ from yaml import YAMLError
 from asr.asr import ASR, ARLibrispeech
 from asr.recorder import Recorder
 from audio_processing.noise import Noise, WhiteNoise
-from hearing_test.test_logic import DigitInNoise, HearingTest
-from stimuli_generator.questions import DigitQuestions, Questions
+from hearing_test.test_logic import DigitInNoise
+from stimuli_generator.questions import DigitQuestions
 from tts.tts import TTS, GenerateSound
 from tts.utils import play_sound
 
@@ -32,46 +32,40 @@ def read_conf(src: str = "config.yaml") -> dict:
             raise exc
 
 
-def initialize() -> tuple[HearingTest, Questions, ASR, Recorder, TTS, Noise, int]:
-    """Initialize the hearing test and other modules.
+class Initializer:
+    """A class to create the hearing test based on config file."""
 
-    Returns:
-        tuple: Return the hearing test, question generator, asr,
-                recorder, sound, noise generator and the starting level of snr.
-    """
-    conf = read_conf()
-    hearing_test = DigitInNoise(
-        correct_threshold=conf["test"]["correct_threshold"],
-        incorrect_threshold=conf["test"]["incorrect_threshold"],
-        step_size=conf["test"]["step_size"],
-        reversal_limit=conf["test"]["reversal_limit"],
-    )
+    def __init__(self, config_file: str) -> None:
+        """Initialize the hearing test and other modules.
 
-    stimuli_generator = DigitQuestions()
+        Args:
+            config_file (str): Path to the configuration file.
+        """
+        self.conf = read_conf(config_file)
+        self.hearing_test = DigitInNoise(
+            correct_threshold=self.conf["test"]["correct_threshold"],
+            incorrect_threshold=self.conf["test"]["incorrect_threshold"],
+            step_size=self.conf["test"]["step_size"],
+            reversal_limit=self.conf["test"]["reversal_limit"],
+        )
 
-    asr = ARLibrispeech()
+        self.stimuli_generator = DigitQuestions()
 
-    recorder = Recorder(
-        store=True,
-        chunk=1024,
-        rms_threshold=10,
-        timeout_length=3,
-        save_dir=r"records",
-    )
+        self.asr = ARLibrispeech()
 
-    noise = WhiteNoise()
+        self.recorder = Recorder(
+            store=True,
+            chunk=1024,
+            rms_threshold=10,
+            timeout_length=3,
+            save_dir=r"records",
+        )
 
-    sound_generator = GenerateSound(device="cpu")
+        self.noise = WhiteNoise()
 
-    return (
-        hearing_test,
-        stimuli_generator,
-        asr,
-        recorder,
-        sound_generator,
-        noise,
-        conf["test"]["start-snr"],
-    )
+        self.sound_generator = GenerateSound(device="cpu")
+
+        self.start_snr = self.conf["test"]["start-snr"]
 
 
 def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):
