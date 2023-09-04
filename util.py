@@ -3,9 +3,9 @@ import yaml
 from loguru import logger
 from yaml import YAMLError
 
-from asr.asr import ASR, ARLibrispeech
-from asr.recorder import Recorder
 from audio_processing.noise import Noise, WhiteNoise
+from get_response.asr import ASR, ARLibrispeech
+from get_response.recorder import Recorder
 from hearing_test.test_logic import DigitInNoise
 from stimuli_generator.questions import DigitQuestions
 from tts.tts import TTS, GenerateSound
@@ -51,7 +51,7 @@ class Initializer:
 
         self.stimuli_generator = DigitQuestions()
 
-        self.asr = ARLibrispeech()
+        self.asr = self.get_asr()
 
         self.recorder = Recorder(
             store=True,
@@ -65,7 +65,20 @@ class Initializer:
 
         self.sound_generator = GenerateSound(device="cpu")
 
-        self.start_snr = self.conf["test"]["start-snr"]
+        self.start_snr = self.conf["test"]["start_snr"]
+
+    def get_asr(self) -> ASR:
+        """Get the proper asr engine based on config file.
+
+        Raises:
+            NotImplementedError: If the asr type is not implemented.
+
+        Returns:
+            ASR: The asr engine.
+        """
+        if self.conf["asr"]["type"] == "ARLibrispeech":
+            return ARLibrispeech()
+        raise NotImplementedError
 
 
 def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):
@@ -94,6 +107,7 @@ def listen(asr: ASR, recorder: Recorder) -> str:
         str: transcribed text.
     """
     file_src = recorder.listen()
-    transcribe = asr.transcribe(file_src)
+    asr.file_path = file_src
+    transcribe = asr.get()
     logger.debug(transcribe)
     return transcribe

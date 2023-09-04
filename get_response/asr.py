@@ -1,23 +1,35 @@
 """Run ASR and convert audio to text."""
-from abc import ABC, abstractmethod
 import os
+from abc import abstractmethod
 
 from loguru import logger
 from speechbrain.pretrained import EncoderDecoderASR
 
+from get_response.base import CaptureResponse
 
-class ASR(ABC):
+
+class ASR(CaptureResponse):
     """Interface for the ASR system."""
 
-    @abstractmethod
-    def transcribe(self, src: str) -> str:
-        """Get a wav file address and return the transcription of it.
+    def __init__(self) -> None:
+        """Initialize the class."""
+        self.file_path = ""
 
-        Args:
-            src (str): Address of the audio file.
+    @abstractmethod
+    def _transcribe(self) -> str:
+        """Get a wav file address and return the transcription of it.
 
         Returns:
             str: transcribe of the file.
+        """
+        ...
+
+    @abstractmethod
+    def get(self) -> str:
+        """Transcribe the input file.
+
+        Returns:
+            str: File transcription.
         """
         ...
 
@@ -34,20 +46,26 @@ class ARLibrispeech(ASR):
             source="speechbrain/asr-crdnn-rnnlm-librispeech",
             savedir="models/asr/asr-crdnn-rnnlm-librispeech",
         )
+        self.file_path = ""
 
-    def transcribe(self, src: str) -> str:
+    def _transcribe(self) -> str:
         """Get a wav file address and return the transcription of it.
-
-        Args:
-            src (str): Address of the audio file.
 
         Returns:
             str: transcribe of the file.
         """
-        result = self.asr_model.transcribe_file(src)
-        basename = os.path.basename(src)
+        result = self.asr_model.transcribe_file(self.file_path)
+        basename = os.path.basename(self.file_path)
         try:
-            os.remove(src)
+            os.remove(self.file_path)
         except FileNotFoundError:
             logger.warning(f"{basename} not found.")
         return result
+
+    def get(self) -> str:
+        """Transcribe the input file.
+
+        Returns:
+            str: File transcription.
+        """
+        return self._transcribe()
