@@ -8,8 +8,8 @@ test:
   stimuli_type: digits
   noise: white-noise
 
-response_capturing: cli #cli, asr
-stimuli_generation: tts #tts, pre-recorded
+response_capturing: cli #[cli, asr]
+stimuli_generation: tts #[tts, pre-recorded]
 
 ml:
   asr: ARLibrispeech

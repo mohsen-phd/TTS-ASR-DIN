@@ -39,15 +39,15 @@ class DigitQuestions(Questions):
     def __init__(self) -> None:
         """Initialize the questions object by storing the text of the question."""
         self.vocab_list = [
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine",
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
         ]
         super().__init__()
 
@@ -64,23 +64,23 @@ class DigitQuestions(Questions):
         self.question = "The number is " + " ".join(self.main_words)
         return self.question
 
-    def check_answer(self, answer: str) -> bool:
+    def check_answer(self, answer: list[str]) -> bool:
         """Check the given number is the same as the one  presented to the patient.
 
         Args:
-            answer (str): The patient's response.
+            answer (list[str]): The patient's response.
 
         Returns:
             bool: Is a match or not.
         """
-        answer = answer.lower()
-        correct_count = 0
-        for word in self.main_words:
-            if word.lower() in answer:
-                correct_count += 1
-                answer = answer.replace(word.lower(), "")
+        answer = [item.lower() for item in answer]
 
-        if correct_count >= 2:
+        correct_words = []
+        for word in answer:
+            if word.lower() in self.main_words:
+                correct_words.append(word)
+
+        if correct_words == self.main_words:
             return True
         else:
             return False
