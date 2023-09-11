@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 from loguru import logger
 
-from audio_processing.noise import WhiteNoise
+from audio_processing.noise import Babble, WhiteNoise
 from get_response.asr import ASR, ARLibrispeech
 from get_response.base import CaptureResponse
 from get_response.cli import CLI
@@ -43,11 +43,26 @@ class TestManager(ABC):
             save_dir=r"records",
         )
 
-        self.noise = WhiteNoise()
+        self.noise = self._get_noise()
 
         self.sound_generator = GenerateSound(device="cpu")
 
         self.start_snr = self.conf["test"]["start_snr"]
+
+    def _get_noise(self):
+        """Get the proper noise generator based on config file.
+
+        Raises:
+            NotImplementedError: If the noise type is not implemented.
+
+        Returns:
+            Noise: The noise generator.
+        """
+        if self.conf["test"]["noise"]["type"] == "white":
+            return WhiteNoise()
+        elif self.conf["test"]["noise"]["type"] == "babble":
+            return Babble(noise_src=self.conf["test"]["noise"]["src"])
+        raise NotImplementedError
 
     @abstractmethod
     def get_response(self) -> list[str]:

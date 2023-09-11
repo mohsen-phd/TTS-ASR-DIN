@@ -1,6 +1,8 @@
 #User
 .DS_Store
-*.wav
+
+records/*
+train/digit_asr/recordings/*.wav
 
 
 
@@ -135,4 +137,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-

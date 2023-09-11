@@ -6,7 +6,9 @@ test:
   step_size: [5, 3, 1]
   reversal_limit: 10
   stimuli_type: digits
-  noise: white-noise
+  noise:
+    type: babble #[white, babble]
+    src: "/Users/user/Documents/Projects/PhD/Wordnet-Hearing-Test/audio_processing/noise/babble.wav"
 
 response_capturing: cli #[cli, asr]
 stimuli_generation: tts #[tts, pre-recorded]

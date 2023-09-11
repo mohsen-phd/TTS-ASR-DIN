@@ -78,3 +78,23 @@ def convert_to_specific_db_spl(signal: np.ndarray, target_level: float) -> np.nd
     signal = signal * factor
     logger.info(f"Current level: {calculate_db_spl(signal):.2f} dB SPL")
     return signal
+
+
+def convert_to_specific_rms(signal: np.ndarray, desired_rms: float) -> np.ndarray:
+    """Convert a signal to a specific RMS.
+
+    Args:
+        signal (np.ndarray): input signal.
+        desired_rms (float): desired RMS.
+
+    Returns:
+        np.ndarray: scaled signal.
+    """
+    current_rms = rms_amplitude(signal)
+
+    # Calculate the scaling factor
+    scaling_factor = desired_rms / current_rms
+
+    # Normalize the signal to the desired RMS amplitude
+    normalized_signal = signal * scaling_factor
+    return normalized_signal
