@@ -114,10 +114,10 @@ class DigitInNoise(HearingTest):
         Returns:
             int: The amount to change the SNR.
         """
-        if self._reversal_count > 2:
-            return self._step_size[1]
-        elif self._reversal_count > 4:
+        if self._reversal_count > 4:
             return self._step_size[2]
+        elif self._reversal_count > 2:
+            return self._step_size[1]
         else:
             return self._step_size[0]
 

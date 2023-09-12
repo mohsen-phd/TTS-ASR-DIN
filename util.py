@@ -1,5 +1,6 @@
 """Utility module for the main script."""
 
+import numpy as np
 import yaml
 from loguru import logger
 from yaml import YAMLError
@@ -39,6 +40,7 @@ def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):
         noise (Noise): object to generate noise.
     """
     sound_wave = sound_generator.get_sound(stimuli).squeeze(0)
+    sound_wave = np.pad(sound_wave, (500, 500), "constant", constant_values=(0, 0))
     noise_signal = noise.generate_noise(sound_wave, snr_db)
     noisy_wave = sound_wave + noise_signal
     play_sound(wave=noisy_wave, fs=22050)
