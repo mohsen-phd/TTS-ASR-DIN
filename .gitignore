@@ -2,8 +2,7 @@
 .DS_Store
 
 records/*
-train/digit_asr/recordings/*.wav
-
+train/digit_asr/data
 
 
 
