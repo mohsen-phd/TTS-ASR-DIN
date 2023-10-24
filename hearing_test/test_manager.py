@@ -17,13 +17,13 @@ from util import read_conf
 class TestManager(ABC):
     """A class to create the hearing test based on config file."""
 
-    def __init__(self, config_file: str) -> None:
+    def __init__(self, configs: dict) -> None:
         """Initialize the hearing test and other modules.
 
         Args:
-            config_file (str): Path to the configuration file.
+            configs (dict): Path to the configuration file.
         """
-        self.conf = read_conf(config_file)
+        self.conf = configs
         self.hearing_test = DigitInNoise(
             correct_threshold=self.conf["test"]["correct_threshold"],
             incorrect_threshold=self.conf["test"]["incorrect_threshold"],
@@ -86,13 +86,13 @@ class TestManager(ABC):
 class CliTestManager(TestManager):
     """Test manager for command line test."""
 
-    def __init__(self, config_file: str) -> None:
+    def __init__(self, configs: dict) -> None:
         """Initialize the command line test manager.
 
         Args:
-            config_file (str): Path to the configuration file.
+            configs (dict): Loaded configuration.
         """
-        super().__init__(config_file)
+        super().__init__(configs)
         self.digit_convertor = {
             "1": "one",
             "2": "two",

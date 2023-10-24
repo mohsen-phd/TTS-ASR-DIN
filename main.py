@@ -2,12 +2,17 @@
 from loguru import logger
 
 from hearing_test.test_manager import ASRTestManager, CliTestManager
-from util import play_stimuli
+from util import play_stimuli, read_conf
 
 
 def main():
     """Code entry point."""
-    manager = ASRTestManager(config_file="config.yaml")
+    configs = read_conf("config.yaml")
+
+    if configs["response_capturing"] == "cli":
+        manager = CliTestManager(configs)
+    else:
+        manager = ASRTestManager(configs)
 
     snr_db = manager.start_snr
     correct_count = incorrect_count = 0
