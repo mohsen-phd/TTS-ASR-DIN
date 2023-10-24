@@ -1,18 +1,15 @@
 """Main entry point of the program."""
 from loguru import logger
 
-from hearing_test.test_manager import ASRTestManager, CliTestManager
-from util import play_stimuli, read_conf
+
+from util import get_test_manager, play_stimuli, read_conf
 
 
 def main():
     """Code entry point."""
     configs = read_conf("config.yaml")
 
-    if configs["response_capturing"] == "cli":
-        manager = CliTestManager(configs)
-    else:
-        manager = ASRTestManager(configs)
+    manager = get_test_manager(configs)
 
     snr_db = manager.start_snr
     correct_count = incorrect_count = 0

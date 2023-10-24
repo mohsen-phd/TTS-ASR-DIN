@@ -6,6 +6,7 @@ from loguru import logger
 from yaml import YAMLError
 
 from audio_processing.noise import Noise
+from hearing_test.test_manager import ASRTestManager, CliTestManager, TestManager
 from vocalizer.utils import play_sound
 from vocalizer.vocalizer import Vocalizer
 
@@ -40,7 +41,27 @@ def play_stimuli(sound_generator: Vocalizer, snr_db: int, stimuli: str, noise: N
         noise (Noise): object to generate noise.
     """
     sound_wave = sound_generator.get_sound(stimuli)
-    sound_wave = np.pad(sound_wave, (500, 500), "constant", constant_values=(0, 0))
+    sound_wave = np.pad(sound_wave, (5000, 5000), "constant", constant_values=(0, 0))
     noise_signal = noise.generate_noise(sound_wave, snr_db)
     noisy_wave = sound_wave + noise_signal
     play_sound(wave=noisy_wave, fs=22050)
+
+
+def get_test_manager(configs: dict) -> TestManager:
+    """Return the proper test manager based on config file.
+
+    Args:
+        configs (dict): loaded config file.
+
+    Raises:
+        NotImplementedError: If the test type is not implemented.
+
+    Returns:
+        TestManager: Appropriate test manager.
+    """
+    if configs["response_capturing"] == "cli":
+        return CliTestManager(configs)
+    elif configs["response_capturing"] == "asr":
+        return ASRTestManager(configs)
+    else:
+        raise NotImplementedError
