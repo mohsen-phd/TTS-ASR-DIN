@@ -1,7 +1,7 @@
 """Main entry point of the program."""
 from loguru import logger
 
-from hearing_test.test_manager import CliTestManager, ASRTestManager
+from hearing_test.test_manager import ASRTestManager, CliTestManager
 from util import play_stimuli
 
 
