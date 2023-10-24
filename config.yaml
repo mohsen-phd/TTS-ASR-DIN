@@ -11,7 +11,9 @@ test:
     src: "/Users/user/Documents/Projects/PhD/Wordnet-Hearing-Test/audio_processing/noise/babble.wav"
 
 response_capturing: cli #[cli, asr]
-stimuli_generation: tts #[tts, pre-recorded]
+stimuli_vocalizer:
+  name: recorded #[tts, recorded]
+  src: "media/digit_recordings/22k"
 
 ml:
   asr_type: ARLibrispeech

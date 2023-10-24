@@ -1,5 +1,6 @@
 """A module to manage and organize the test procedure."""
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from loguru import logger
 
@@ -10,8 +11,7 @@ from get_response.cli import CLI
 from get_response.recorder import Recorder
 from hearing_test.test_logic import DigitInNoise
 from stimuli_generator.questions import DigitQuestions
-from tts.tts import GenerateSound
-from util import read_conf
+from vocalizer.vocalizer import TTS, Recorded, Vocalizer
 
 
 class TestManager(ABC):
@@ -45,9 +45,17 @@ class TestManager(ABC):
 
         self.noise = self._get_noise()
 
-        self.sound_generator = GenerateSound(device="cpu")
+        self.sound_generator = self._get_sound_generator()
 
         self.start_snr = self.conf["test"]["start_snr"]
+
+    def _get_sound_generator(self) -> Vocalizer:
+        if self.conf["stimuli_vocalizer"]["name"] == "recorded":
+            return Recorded(Path(self.conf["stimuli_vocalizer"]["src"]))
+        elif self.conf["stimuli_vocalizer"]["name"] == "tts":
+            return TTS(device="cpu")
+        else:
+            raise NotImplementedError
 
     def _get_noise(self):
         """Get the proper noise generator based on config file.

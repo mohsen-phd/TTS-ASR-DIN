@@ -6,8 +6,8 @@ from loguru import logger
 from yaml import YAMLError
 
 from audio_processing.noise import Noise
-from tts.tts import TTS
-from tts.utils import play_sound
+from vocalizer.utils import play_sound
+from vocalizer.vocalizer import Vocalizer
 
 
 def read_conf(src: str = "config.yaml") -> dict:
@@ -30,16 +30,16 @@ def read_conf(src: str = "config.yaml") -> dict:
             raise exc
 
 
-def play_stimuli(sound_generator: TTS, snr_db: int, stimuli: str, noise: Noise):
+def play_stimuli(sound_generator: Vocalizer, snr_db: int, stimuli: str, noise: Noise):
     """Play the stimuli to the patient.
 
     Args:
-        sound_generator (TTS): object to generate sound using a TTS.
+        sound_generator (Vocalizer): object to generate sound using a TTS.
         snr_db (int): signal to noise ratio in db.
         stimuli (str): The stimuli to play.
         noise (Noise): object to generate noise.
     """
-    sound_wave = sound_generator.get_sound(stimuli).squeeze(0)
+    sound_wave = sound_generator.get_sound(stimuli)
     sound_wave = np.pad(sound_wave, (500, 500), "constant", constant_values=(0, 0))
     noise_signal = noise.generate_noise(sound_wave, snr_db)
     noisy_wave = sound_wave + noise_signal

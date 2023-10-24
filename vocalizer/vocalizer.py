@@ -1,13 +1,15 @@
 """Convert text to speech."""
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 import numpy as np
+from scipy.io import wavfile
 from speechbrain.pretrained import HIFIGAN, Tacotron2
 
 from audio_processing.util import convert_to_specific_db_spl
 
 
-class TTS(ABC):
+class Vocalizer(ABC):
     """Interface for the TTS system."""
 
     @abstractmethod
@@ -20,10 +22,51 @@ class TTS(ABC):
         Returns:
             np.ndarray: waveform in shape of (1,length_of_wave)
         """
-        ...
 
 
-class GenerateSound(TTS):
+class Recorded(Vocalizer):
+    """Class for generating waveform from recorded audio."""
+
+    def __init__(self, src: Path) -> None:
+        """
+        Initialize a new instance of the Vocalizer class.
+
+        Args:
+            src (Path): The path to the recorded audio file.
+        """
+        self.src = src
+
+    def get_sound(self, text: str) -> np.ndarray:
+        """Use the recorded audio to generate the waveform.
+
+        Args:
+            text (str): The generated stimuli as an string.
+
+        Returns:
+            np.ndarray: Audio signal.
+        """
+        digits = self._extract_numbers(text)
+        full_audio = np.array([])
+        for digit in digits:
+            _, digit_audio = wavfile.read(self.src / f"{digit}.wav")
+            full_audio = np.concatenate((full_audio, digit_audio))
+        full_audio = convert_to_specific_db_spl(full_audio, 65)
+        return full_audio
+
+    def _extract_numbers(self, text: str) -> list[str]:
+        """Extract the numbers from the stimuli.
+
+        Args:
+            text (str): Input stimuli as a string.
+
+        Returns:
+            list[str]: List of numbers in string format
+        """
+        split_text = text.split(" ")
+        return split_text[-3:]
+
+
+class TTS(Vocalizer):
     """Class for generating waveform from string."""
 
     def __init__(self, device: str = "cpu") -> None:
@@ -59,4 +102,4 @@ class GenerateSound(TTS):
         waveforms = self.hifi_gan.decode_batch(mel_output)
         sound = waveforms.to("cpu").squeeze(1).numpy()
         sound = convert_to_specific_db_spl(sound, 65)
-        return sound
+        return sound.squeeze(0)
