@@ -1,13 +1,13 @@
 """Main entry point of the program."""
 from loguru import logger
 
-from hearing_test.test_manager import CliTestManager
+from hearing_test.test_manager import CliTestManager, ASRTestManager
 from util import play_stimuli
 
 
 def main():
     """Code entry point."""
-    manager = CliTestManager(config_file="config.yaml")
+    manager = ASRTestManager(config_file="config.yaml")
 
     snr_db = manager.start_snr
     correct_count = incorrect_count = 0

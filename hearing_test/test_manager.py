@@ -142,7 +142,7 @@ class ASRTestManager(TestManager):
         Returns:
             ASR: The asr engine.
         """
-        if self.conf["asr"]["type"] == "ARLibrispeech":
+        if self.conf["ml"]["asr_type"] == "ARLibrispeech":
             return ARLibrispeech()
         raise NotImplementedError
 
