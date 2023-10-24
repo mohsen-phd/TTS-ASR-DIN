@@ -1,5 +1,6 @@
 """Class to generate and process the noise signal."""
 
+import random
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -25,7 +26,7 @@ class Noise(ABC):
         """
         ...
 
-    def _get_noise_amplitutre(self, signal: np.ndarray, desired_snr_db: float) -> float:
+    def _get_noise_amplitude(self, signal: np.ndarray, desired_snr_db: float) -> float:
         """Measure the required amplitude of the noise to achieve the desired SNR.
 
         Get a signal and an SNR in dB and calculate the amplitude of the noise required
@@ -59,7 +60,7 @@ class WhiteNoise(Noise):
         Returns:
             np.ndarray: numpy array containing the noise signal.
         """
-        noise_amplitude = self._get_noise_amplitutre(signal, desired_snr_db)
+        noise_amplitude = self._get_noise_amplitude(signal, desired_snr_db)
         noise = np.random.normal(scale=noise_amplitude, size=len(signal))
 
         return noise
@@ -90,8 +91,9 @@ class Babble(Noise):
         Returns:
             np.ndarray: numpy array containing the noise signal.
         """
-        noise_amplitude = self._get_noise_amplitutre(signal, desired_snr_db)
+        noise_amplitude = self._get_noise_amplitude(signal, desired_snr_db)
 
         scaled_noise = convert_to_specific_rms(self._noise, noise_amplitude)
-
-        return scaled_noise[: len(signal)]
+        signal_len = len(signal)
+        noise_start_point = random.randint(0, len(scaled_noise) - signal_len)
+        return scaled_noise[noise_start_point : noise_start_point + signal_len]
