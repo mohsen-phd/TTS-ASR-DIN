@@ -29,6 +29,7 @@ class TestManager(ABC):
             incorrect_threshold=self.conf["test"]["incorrect_threshold"],
             step_size=self.conf["test"]["step_size"],
             reversal_limit=self.conf["test"]["reversal_limit"],
+            minimum_threshold=self.conf["test"]["minimum_threshold"],
         )
 
         self.stimuli_generator = DigitQuestions()

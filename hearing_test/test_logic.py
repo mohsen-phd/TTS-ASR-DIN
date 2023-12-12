@@ -3,6 +3,8 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
+from loguru import logger
+
 
 class STATUS(Enum):
     """Enum to represent the status of the test."""
@@ -73,6 +75,7 @@ class DigitInNoise(HearingTest):
         incorrect_threshold: int,
         step_size: list[int],
         reversal_limit: int,
+        minimum_threshold: int,
     ):
         """Initialize the DigitInNoise class.
 
@@ -89,6 +92,10 @@ class DigitInNoise(HearingTest):
         self._reversal_count = 0
         self._previous_action = STATUS.INIT
         self._reversal_limit = reversal_limit
+        self.correct_count_at_max_snr = 0
+        self._current_status: STATUS = STATUS.INIT
+        self._minimum_threshold = minimum_threshold
+
         super().__init__()
 
     def _is_reversing(self, new_status: STATUS) -> bool:
@@ -114,9 +121,9 @@ class DigitInNoise(HearingTest):
         Returns:
             int: The amount to change the SNR.
         """
-        if self._reversal_count > 4:
+        if self._reversal_count >= 4:
             return self._step_size[2]
-        elif self._reversal_count > 2:
+        elif self._reversal_count >= 2:
             return self._step_size[1]
         else:
             return self._step_size[0]
@@ -139,17 +146,26 @@ class DigitInNoise(HearingTest):
         """
         new_snr = snr_db
         if correct_count >= self._correct_threshold:
-            snr_change = self._get_snr_change(STATUS.DECREASE)
-            new_snr = snr_db - snr_change
-
+            self._current_status = STATUS.DECREASE
         elif incorrect_count >= self._incorrect_threshold:
-            snr_change = self._get_snr_change(STATUS.INCREASE)
-            new_snr = snr_db + snr_change
+            self._current_status = STATUS.INCREASE
         else:
             return new_snr
 
-        self._update_important_snr(new_snr, snr_change)
+        snr_change = self._get_snr_change()
+        new_snr = snr_db + snr_change
+
+        self._update_important_snr(new_snr, abs(snr_change))
         return new_snr
+
+    def update_variables(self, correct_response: bool, snr: float) -> None:
+        if correct_response and snr < self._minimum_threshold:
+            self.correct_count_at_max_snr += 1
+
+        if self._is_reversing(self._current_status):
+            self._reversal_count += 1
+            logger.info(f"Reversal: {self._reversal_count}")
+        self._previous_action = self._current_status
 
     def _update_important_snr(self, new_snr: int, snr_change: int) -> None:
         """Add the new SNR to the list of important SNRs.
@@ -164,19 +180,15 @@ class DigitInNoise(HearingTest):
         if snr_change == self._step_size[-1]:
             self._important_snr.append(new_snr)
 
-    def _get_snr_change(self, status: STATUS) -> int:
-        """Get the step size of SNR change.
-
-        Args:
-            status (STATUS): Determine if the SNR should increase or decrease.
+    def _get_snr_change(self) -> int:
+        """Get the step size of SNR change, based on current status.
 
         Returns:
             int: how much to change the SNR
         """
-        if self._is_reversing(status):
-            self._reversal_count += 1
-        self._previous_action = status
         snr_change = self._get_step_size()
+        if self._current_status == STATUS.DECREASE:
+            snr_change *= -1
         return snr_change
 
     def stop_condition(self) -> bool:
@@ -185,7 +197,10 @@ class DigitInNoise(HearingTest):
         Returns:
             bool: True if the test should stop, False otherwise.
         """
+
         if self._reversal_count > self._reversal_limit:
+            return True
+        elif self.correct_count_at_max_snr > 6:
             return True
         else:
             return False

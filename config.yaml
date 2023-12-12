@@ -2,6 +2,7 @@ test:
   hearing-test: digit-in-noise
   start_snr: 5
   correct_threshold: 2
+  minimum_threshold: -40
   incorrect_threshold: 1
   step_size: [5, 3, 1]
   reversal_limit: 10

@@ -1,7 +1,6 @@
 """Main entry point of the program."""
 from loguru import logger
 
-
 from util import get_test_manager, play_stimuli, read_conf
 
 
@@ -30,6 +29,7 @@ def main():
         new_snr_db = manager.hearing_test.get_next_snr(
             correct_count, incorrect_count, snr_db
         )
+        manager.hearing_test.update_variables(matched, snr_db)
         logger.info(f"New SNR: {new_snr_db}")
         if new_snr_db != snr_db:
             snr_db = new_snr_db
