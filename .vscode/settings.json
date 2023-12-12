@@ -1,7 +1,5 @@
 {
     "python.formatting.provider": "none",
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true,
     "editor.formatOnSave": true,
     "cSpell.words": [
         "frombuffer",
@@ -17,9 +15,6 @@
         "Tacotron",
         "wavfile",
         "Wordnet"
-    ],
-    "python.linting.flake8Args": [
-        "--max-line-length=88"
     ],
     "isort.args": [
         "--profile",
