@@ -198,9 +198,9 @@ class DigitInNoise(HearingTest):
             bool: True if the test should stop, False otherwise.
         """
 
-        if self._reversal_count > self._reversal_limit:
+        if self._reversal_count >= self._reversal_limit:
             return True
-        elif self.correct_count_at_max_snr > 6:
+        elif self.correct_count_at_max_snr >= 6:
             return True
         else:
             return False
