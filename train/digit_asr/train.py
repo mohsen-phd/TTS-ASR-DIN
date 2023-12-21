@@ -24,7 +24,7 @@ def word_encoding(words):
     return torch.LongTensor([word_encoder.encode_label(words)])
 
 
-dataset = DynamicItemDataset.from_json("train/digit_asr/data.json")
+dataset = DynamicItemDataset.from_json("train/digit_asr/data/data.json")
 spk_id_encoder = CategoricalEncoder()
 spk_id_encoder.update_from_didataset(dataset, "spkID")
 

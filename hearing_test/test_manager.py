@@ -5,7 +5,7 @@ from pathlib import Path
 from loguru import logger
 
 from audio_processing.noise import Babble, WhiteNoise
-from get_response.asr import ASR, ARLibrispeech
+from get_response.asr import ASR, ARLibrispeech, SimpleASR
 from get_response.base import CaptureResponse
 from get_response.cli import CLI
 from get_response.recorder import Recorder
@@ -103,6 +103,7 @@ class CliTestManager(TestManager):
         """
         super().__init__(configs)
         self.digit_convertor = {
+            "0": "zero",
             "1": "one",
             "2": "two",
             "3": "three",
@@ -153,6 +154,8 @@ class ASRTestManager(TestManager):
         """
         if self.conf["ml"]["asr_type"] == "ARLibrispeech":
             return ARLibrispeech()
+        elif self.conf["ml"]["asr_type"] == "SimpleASR":
+            return SimpleASR()
         raise NotImplementedError
 
     def get_response(self) -> list[str]:
