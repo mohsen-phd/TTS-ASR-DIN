@@ -38,17 +38,23 @@ class ASR(CaptureResponse):
         ...
 
 
-class ARLibrispeech(ASR):
+class SpeechBrainASR(ASR):
     """Use Attention and RNNLM trained on LibriSpeech to convert audio to text.
 
     url: https://huggingface.co/speechbrain/asr-crdnn-rnnlm-librispeech
     """
 
-    def __init__(self) -> None:
-        """Initialize the class by loading HugginFace models."""
+    def __init__(self, source: str, save_dir: str) -> None:
+        """Initialize a SpeechBrain based asr model.
+
+        Args:
+            source (str): HuggingFace source of the model.
+            save_dir (str): The location the model is save on the local machine.
+        """
+        super().__init__()
         self.asr_model = EncoderDecoderASR.from_hparams(
-            source="speechbrain/asr-crdnn-rnnlm-librispeech",
-            savedir="models/asr/asr-crdnn-rnnlm-librispeech",
+            source=source,
+            savedir=save_dir,
         )
 
     def _transcribe(self, src: str) -> str:
@@ -144,7 +150,6 @@ class SimpleASR(ASR):
         Returns:
             tf.Tensor: Extracted features.
         """
-
         if wav_file.shape[0] >= 44000:
             wav_file = tf.slice(wav_file, [0], [44000])
         else:

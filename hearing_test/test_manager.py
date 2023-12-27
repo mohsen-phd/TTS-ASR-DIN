@@ -5,7 +5,7 @@ from pathlib import Path
 from loguru import logger
 
 from audio_processing.noise import Babble, WhiteNoise
-from get_response.asr import ASR, ARLibrispeech, SimpleASR
+from get_response.asr import ASR, SpeechBrainASR, SimpleASR
 from get_response.base import CaptureResponse
 from get_response.cli import CLI
 from get_response.recorder import Recorder
@@ -152,8 +152,11 @@ class ASRTestManager(TestManager):
         Returns:
             ASR: The asr engine.
         """
-        if self.conf["ml"]["asr_type"] == "ARLibrispeech":
-            return ARLibrispeech()
+        if self.conf["ml"]["asr_type"] == "SpeechBrain":
+            return SpeechBrainASR(
+                source=self.conf["ml"]["asr_source"],
+                save_dir=self.conf["ml"]["asr_save_dir"],
+            )
         elif self.conf["ml"]["asr_type"] == "SimpleASR":
             return SimpleASR()
         raise NotImplementedError

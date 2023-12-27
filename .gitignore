@@ -136,3 +136,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+models/asr/asr-wav2vec2-commonvoice-en/*
+

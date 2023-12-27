@@ -20,6 +20,7 @@ spacy = "^3.5.0"
 pydub = "^0.25.1"
 tensorflow-io = "0.34.0"
 tensorflow = "2.15"
+transformers = "^4.36.2"
 
 
 [tool.poetry.group.dev.dependencies]
