@@ -3,9 +3,10 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 from loguru import logger
+from pydub import AudioSegment
 
 from audio_processing.noise import Babble, WhiteNoise
-from get_response.asr import ASR, SpeechBrainASR, SimpleASR
+from get_response.asr import ASR, SimpleASR, SpeechBrainASR
 from get_response.base import CaptureResponse
 from get_response.cli import CLI
 from get_response.recorder import Recorder
@@ -140,6 +141,16 @@ class CliTestManager(TestManager):
 class ASRTestManager(TestManager):
     """Test manager for ASR test."""
 
+    def __init__(self, configs: dict) -> None:
+        """Initialize the ASR test manager.
+
+        Args:
+            configs (dict): Loaded configuration.
+        """
+        super().__init__(configs)
+        self._prepend = AudioSegment.from_wav(configs["test"]["Prepend_wav_file"])
+        self._prepend_len = configs["test"]["prepend_str_len"]
+
     def _capture_method(self) -> CaptureResponse:
         return self.get_asr()
 
@@ -168,6 +179,12 @@ class ASRTestManager(TestManager):
             list[str]: List of words in the participant's response.
         """
         file_src = self.recorder.listen()
+        transcribe_before_append = self.response_capturer.get(src=file_src)
+        response_wav = AudioSegment.from_wav(file_src)
+        amended_wav = self._prepend + response_wav
+        amended_wav.export(file_src, format="wav")
         transcribe = self.response_capturer.get(src=file_src)
+        logger.debug(transcribe_before_append)
         logger.debug(transcribe)
-        return transcribe.split(" ")
+
+        return transcribe.split(" ")[self._prepend_len :]

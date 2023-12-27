@@ -67,11 +67,6 @@ class SpeechBrainASR(ASR):
             str: transcribe of the file.
         """
         result = self.asr_model.transcribe_file(src)
-        basename = os.path.basename(self.file_path)
-        try:
-            os.remove(self.file_path)
-        except FileNotFoundError:
-            logger.warning(f"{basename} not found.")
         return result
 
     def get(self, src: str) -> str:
@@ -213,12 +208,6 @@ class SimpleASR(ASR):
             prediction = self.asr_model(sample)
             result = tf.nn.softmax(prediction[0])
             result_text = result_text + " " + self.label[tf.argmax(result).numpy()]
-
-        basename = os.path.basename(self.file_path)
-        try:
-            os.remove(self.file_path)
-        except FileNotFoundError:
-            logger.warning(f"{basename} not found.")
         return result_text.strip()
 
     def get(self, src: str) -> str:
