@@ -138,3 +138,4 @@ dmypy.json
 .pyre/
 models/asr/asr-wav2vec2-commonvoice-en/*
 
+model_checkpoints/*
