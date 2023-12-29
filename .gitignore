@@ -139,3 +139,4 @@ dmypy.json
 models/asr/asr-wav2vec2-commonvoice-en/*
 
 model_checkpoints/*
+*.wav
