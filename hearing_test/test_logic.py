@@ -85,6 +85,7 @@ class DigitInNoise(HearingTest):
                                             before increasing the SNR.
             step_size (list[int]): In what steps to increase/decrease the SNR
             reversal_limit (int): How many reversals before stopping the test.
+            minimum_threshold(int): The minimum SNR to use. is used to  stop the test if multiple correct answers are given at the minimum SNR.
         """
         self._correct_threshold = correct_threshold
         self._incorrect_threshold = incorrect_threshold
@@ -159,6 +160,12 @@ class DigitInNoise(HearingTest):
         return new_snr
 
     def update_variables(self, correct_response: bool, snr: float) -> None:
+        """Update internal variables of the test.
+
+        Args:
+            correct_response (bool): The response is correct or not.
+            snr (float): The current SNR value.
+        """
         if correct_response and snr < self._minimum_threshold:
             self.correct_count_at_max_snr += 1
 
@@ -197,7 +204,6 @@ class DigitInNoise(HearingTest):
         Returns:
             bool: True if the test should stop, False otherwise.
         """
-
         if self._reversal_count >= self._reversal_limit:
             return True
         elif self.correct_count_at_max_snr >= 6:

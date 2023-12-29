@@ -2,7 +2,7 @@
 import os
 import sys
 
-from colorama import Fore, Back, Style
+from colorama import Fore
 from loguru import logger
 
 from util import get_test_manager, play_stimuli, read_conf
