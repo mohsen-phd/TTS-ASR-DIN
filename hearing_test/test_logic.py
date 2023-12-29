@@ -164,7 +164,7 @@ class DigitInNoise(HearingTest):
 
         if self._is_reversing(self._current_status):
             self._reversal_count += 1
-            logger.info(f"Reversal: {self._reversal_count}")
+            logger.debug(f"Reversal: {self._reversal_count}")
         self._previous_action = self._current_status
 
     def _update_important_snr(self, new_snr: int, snr_change: int) -> None:

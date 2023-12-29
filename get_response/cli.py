@@ -1,5 +1,6 @@
 """Get respond form command line."""
 from get_response.base import CaptureResponse
+from colorama import Fore
 
 
 class CLI(CaptureResponse):
@@ -11,4 +12,4 @@ class CLI(CaptureResponse):
         Returns:
             str: File transcription.
         """
-        return input("Enter your response: ")
+        return input(Fore.GREEN + "Enter your response: ")

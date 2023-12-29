@@ -11,7 +11,7 @@ dev_clean_root = (
     "/Users/user/Documents/Projects/PhD/Wordnet-Hearing-Test/train/digit_asr/recordings"
 )
 wav_files = glob.glob(os.path.join(dev_clean_root, "*.wav"), recursive=True)
-logger.info("tot wav audio files {}".format(len(wav_files)))
+logger.debug("tot wav audio files {}".format(len(wav_files)))
 
 records = {}
 vocab = {
