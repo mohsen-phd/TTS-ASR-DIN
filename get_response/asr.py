@@ -1,10 +1,8 @@
 """Run ASR and convert audio to text."""
 import math
-import os
 from abc import abstractmethod
 
 import tensorflow as tf
-from loguru import logger
 from pydub import AudioSegment
 from pydub.silence import detect_nonsilent
 from speechbrain.pretrained import EncoderDecoderASR

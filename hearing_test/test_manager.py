@@ -172,6 +172,31 @@ class ASRTestManager(TestManager):
             return SimpleASR()
         raise NotImplementedError
 
+    def _post_process(self, responses: list[str]) -> list[str]:
+        """Post process the transcribe and remove common mistakes.
+
+        Args:
+            responses (list[str]): List of words in the participant's response.
+
+        Returns:
+            list[str]: List of words in the participant's response after changing the common mistakes.
+        """
+        common_mistakes = {
+            "ate": "eight",
+            "for": "four",
+            "too": "two",
+            "through": "three",
+            "to": "two",
+            "tree": "three",
+            "sixth": "six",
+            "seventy": "seven",
+            "fifth": "five",
+        }
+        clean_response = [
+            common_mistakes[x] if x in common_mistakes else x for x in responses
+        ]
+        return clean_response
+
     def get_response(self) -> list[str]:
         """Get the response from the participant.
 
@@ -179,12 +204,9 @@ class ASRTestManager(TestManager):
             list[str]: List of words in the participant's response.
         """
         file_src = self.recorder.listen()
-        transcribe_before_append = self.response_capturer.get(src=file_src)
-        response_wav = AudioSegment.from_wav(file_src)
-        amended_wav = self._prepend + response_wav
-        amended_wav.export(file_src, format="wav")
-        transcribe = self.response_capturer.get(src=file_src)
-        logger.debug(transcribe_before_append)
-        logger.debug(transcribe)
 
-        return transcribe.split(" ")[self._prepend_len :]
+        transcribe = self.response_capturer.get(src=file_src).lower()
+        logger.debug(transcribe)
+        results = self._post_process(transcribe.split(" "))
+        logger.debug(results)
+        return results
