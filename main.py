@@ -1,4 +1,5 @@
 """Main entry point of the program."""
+import os
 import sys
 
 from colorama import Fore, Back, Style
@@ -10,12 +11,31 @@ logger.remove(0)
 logger.add(sys.stderr, level="INFO")
 
 
+def preparation() -> tuple[str, str]:
+    """prepare the test and logging system.
+
+    Returns:
+        tuple(str,str): save location of logs and audio recording. test number for logging.
+    """
+    participant_id = input(Fore.GREEN + "Enter The ID: ")
+    test_number = input(Fore.GREEN + "Enter test number: ")
+
+    save_dir = f"records/{participant_id}"
+    os.makedirs(save_dir, exist_ok=True)
+    os.makedirs(f"save_dir/{test_number}", exist_ok=True)
+
+    logger.add(f"{save_dir}/{test_number}/out.log")
+    logger.debug(f"\nParticipant ID: {participant_id}")
+    input(Fore.RED + "Press enter to start the test ")
+    return save_dir, test_number
+
+
 def main():
     """Code entry point."""
-    participant_id = input(Fore.GREEN + "Enter The ID: ")
-    logger.debug(f"Participant ID: {participant_id}")
-    configs = read_conf("config.yaml")
+    save_dir, test_number = preparation()
 
+    configs = read_conf("config.yaml")
+    configs["test"]["record_save_dir"] = f"{save_dir}/{test_number}"
     manager = get_test_manager(configs)
 
     snr_db = manager.start_snr
@@ -23,10 +43,9 @@ def main():
     while not manager.hearing_test.stop_condition():
         question = manager.stimuli_generator.get_stimuli()
         print(Fore.YELLOW + "Listen to the numbers")
-
+        logger.debug(f"The stimuli is: {question}")
         play_stimuli(manager.sound_generator, snr_db, question, manager.noise)
 
-        print(Fore.GREEN + "Repeat the number you heard")
         transcribe = manager.get_response()
 
         matched = manager.stimuli_generator.check_answer(transcribe)
@@ -46,7 +65,7 @@ def main():
             snr_db = new_snr_db
             correct_count = incorrect_count = 0
 
-    logger.debug(f"SRT: {manager.hearing_test.srt}")
+    logger.debug(f"SRT: {manager.hearing_test.srt} \n")
     print(Fore.RED + "End of the test")
 
 

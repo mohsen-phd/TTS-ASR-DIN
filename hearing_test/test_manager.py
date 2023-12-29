@@ -1,6 +1,7 @@
 """A module to manage and organize the test procedure."""
 from abc import ABC, abstractmethod
 from pathlib import Path
+from colorama import Fore
 
 from loguru import logger
 from pydub import AudioSegment
@@ -42,7 +43,7 @@ class TestManager(ABC):
             chunk=1024,
             rms_threshold=10,
             timeout_length=3,
-            save_dir=r"records",
+            save_dir=configs["test"]["record_save_dir"],
         )
 
         self.noise = self._get_noise()
@@ -130,11 +131,15 @@ class CliTestManager(TestManager):
         Returns:
             list[str]: List of words in the participant's response.
         """
+        print(Fore.GREEN + "Enter the number you heard")
+        logger.debug("Enter the number you heard")
+
         listed_response = [
             self.digit_convertor[i]
             for i in self.response_capturer.get()
             if i in self.digit_convertor
         ]
+        logger.debug(listed_response)
         return listed_response
 
 
@@ -191,6 +196,8 @@ class ASRTestManager(TestManager):
             "sixth": "six",
             "seventy": "seven",
             "fifth": "five",
+            "fourth": "four",
+            "fly": "five",
         }
         clean_response = [
             common_mistakes[x] if x in common_mistakes else x for x in responses
@@ -203,6 +210,10 @@ class ASRTestManager(TestManager):
         Returns:
             list[str]: List of words in the participant's response.
         """
+        logger.debug("Repeat the number you heard")
+
+        print(Fore.GREEN + "Repeat the number you heard")
+
         file_src = self.recorder.listen()
 
         transcribe = self.response_capturer.get(src=file_src).lower()
