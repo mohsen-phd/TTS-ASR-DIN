@@ -96,7 +96,7 @@ class TTS(Vocalizer):
         Returns:
             np.ndarray: waveform in shape of (1,length_of_wave)
         """
-        mel_output, mel_length, alignment = self.tacotron2.encode_text(text)
+        mel_output, mel_length, alignment = self.tacotron2.encode_text(text + " ")
 
         # Running Vocoder (spectrogram-to-waveform)
         waveforms = self.hifi_gan.decode_batch(mel_output)

@@ -1,8 +1,9 @@
 """A module to manage and organize the test procedure."""
+import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from colorama import Fore
 
+from colorama import Fore
 from loguru import logger
 from pydub import AudioSegment
 
@@ -220,4 +221,8 @@ class ASRTestManager(TestManager):
         logger.debug(transcribe)
         results = self._post_process(transcribe.split(" "))
         logger.debug(results)
+        try:
+            os.remove(file_src.split("/")[-1])
+        except FileNotFoundError:
+            logger.debug("file not found")
         return results

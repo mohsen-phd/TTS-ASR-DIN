@@ -59,10 +59,11 @@ def main():
 
     snr_db = manager.start_snr
     correct_count = incorrect_count = 0
+    iteration = 1
     while not manager.hearing_test.stop_condition():
         question = manager.stimuli_generator.get_stimuli()
         print(Fore.YELLOW + "Listen to the numbers")
-        logger.debug(f"The stimuli is: {question}")
+        logger.debug(f"{iteration} :The stimuli is: {question}")
         play_stimuli(manager.sound_generator, snr_db, question, manager.noise)
 
         transcribe = manager.get_response()
@@ -83,8 +84,9 @@ def main():
         if new_snr_db != snr_db:
             snr_db = new_snr_db
             correct_count = incorrect_count = 0
+        iteration += 1
 
-    logger.debug(f"SRT: {manager.hearing_test.srt} \n")
+    logger.debug(f"Final SRT: {manager.hearing_test.srt} \n")
     print(Fore.RED + "End of the test")
 
 
