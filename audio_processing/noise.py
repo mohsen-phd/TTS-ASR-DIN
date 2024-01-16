@@ -95,7 +95,7 @@ class Babble(Noise):
         Returns:
             np.ndarray: numpy array containing the noise signal.
         """
-        signal_db = calculate_db_spl(signal)
+        signal_db = 65
         noise_db = signal_db - desired_snr_db
         scaled_noise = convert_to_specific_db_spl(self._noise, noise_db)
         signal_len = len(signal)

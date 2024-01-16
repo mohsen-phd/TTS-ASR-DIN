@@ -199,6 +199,10 @@ class ASRTestManager(TestManager):
             "fifth": "five",
             "fourth": "four",
             "fly": "five",
+            "tool": "two",
+            "tune": "two",
+            "tape": "eight",
+            "won": "one",
         }
         clean_response = [
             common_mistakes[x] if x in common_mistakes else x for x in responses
