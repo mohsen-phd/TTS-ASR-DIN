@@ -203,6 +203,13 @@ class ASRTestManager(TestManager):
             "tune": "two",
             "tape": "eight",
             "won": "one",
+            "tool": "two",
+            "tune": "two",
+            "tape": "eight",
+            "won": "one",
+            "fire": "five",
+            "i": "one",
+            "it": "eight",
         }
         clean_response = [
             common_mistakes[x] if x in common_mistakes else x for x in responses
