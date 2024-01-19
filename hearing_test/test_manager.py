@@ -224,7 +224,7 @@ class ASRTestManager(TestManager):
         """
         logger.debug("Repeat the number you heard")
 
-        print(Fore.GREEN + "Repeat the number you heard")
+        print(Fore.GREEN + "Repeat the numbers you heard")
 
         file_src = self.recorder.listen()
 
