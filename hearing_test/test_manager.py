@@ -1,4 +1,5 @@
 """A module to manage and organize the test procedure."""
+
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -15,6 +16,8 @@ from get_response.recorder import Recorder
 from hearing_test.test_logic import DigitInNoise
 from stimuli_generator.questions import DigitQuestions
 from vocalizer.vocalizer import TTS, Recorded, Vocalizer
+from nltk.stem import WordNetLemmatizer
+import nltk
 
 
 class TestManager(ABC):
@@ -156,6 +159,12 @@ class ASRTestManager(TestManager):
         super().__init__(configs)
         self._prepend = AudioSegment.from_wav(configs["test"]["Prepend_wav_file"])
         self._prepend_len = configs["test"]["prepend_str_len"]
+        self._lemmatizer = self._get_lemmatizer()
+
+    def _get_lemmatizer(self):
+        nltk.download("wordnet")
+        lemmatizer = WordNetLemmatizer()
+        return lemmatizer
 
     def _capture_method(self) -> CaptureResponse:
         return self.get_asr()
@@ -191,7 +200,7 @@ class ASRTestManager(TestManager):
             "ate": "eight",
             "for": "four",
             "too": "two",
-            "through": "three",
+            "through": "two",
             "to": "two",
             "tree": "three",
             "sixth": "six",
@@ -203,16 +212,60 @@ class ASRTestManager(TestManager):
             "tune": "two",
             "tape": "eight",
             "won": "one",
-            "tool": "two",
-            "tune": "two",
             "tape": "eight",
             "won": "one",
             "fire": "five",
             "i": "one",
             "it": "eight",
+            "seventh": "seven",
+            "eighth": "eight",
+            "ninth": "nine",
+            "third": "three",
+            "bore": "four",
+            "bride": "five",
+            "bribe": "five",
+            "or": "four",
+            "ford": "four",
+            "aid": "eight",
+            "o": "zero",
+            "oh": "zero",
+            "sex": "six",
+            "age": "eight",
+            "due": "two",
+            "du": "two",
+            "wait": "eight",
+            "want": "one",
+            "fay": "five",
+            "fhi": "five",
+            "run": "one",
+            "sikh": "six",
+            "seek": "six",
+            "sick": "six",
+            "sik": "six",
+            "age": "eight",
+            "fore": "four",
+            "full": "four",
+            "free": "three",
+            "wom": "one",
+            "h": "eight",
+            "chu": "two",
+            "fife": "five",
+            "a": "eight",
+            "set": "six",
+            "ward": "one",
+            "hit": "eight",
+            "hate": "eight",
+            "height": "eight",
+            "ave": "eight",
+            "true": "two",
+            "fort": "four",
+            "do": "two",
         }
+
+        lemmatized_response = [self._lemmatizer.lemmatize(x) for x in responses]
         clean_response = [
-            common_mistakes[x] if x in common_mistakes else x for x in responses
+            common_mistakes[x] if x in common_mistakes else x
+            for x in lemmatized_response
         ]
         return clean_response
 

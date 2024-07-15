@@ -1,4 +1,5 @@
 """Main entry point of the program."""
+
 import os
 import sys
 
@@ -61,6 +62,8 @@ def main():
     correct_count = incorrect_count = 0
     iteration = 1
     while not manager.hearing_test.stop_condition():
+        print(Fore.RED + "Press Enter to play the next digits")
+        input()
         question = manager.stimuli_generator.get_stimuli()
         print(Fore.YELLOW + "Listen to the numbers")
         logger.debug(f"{iteration} :The stimuli is: {question}")
