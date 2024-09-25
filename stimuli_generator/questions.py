@@ -1,4 +1,5 @@
 """Module for storing question and their validation method."""
+
 import random
 from abc import ABC, abstractmethod
 
@@ -39,6 +40,7 @@ class DigitQuestions(Questions):
     def __init__(self) -> None:
         """Initialize the questions object by storing the text of the question."""
         self.vocab_list = [
+            "zero",
             "one",
             "two",
             "three",
