@@ -5,13 +5,14 @@ description = "Hearing test using Wordnet,ASR and TTS"
 authors = ["Mohsen Fatehifar <mohsen.fatehifar@gmail.com>"]
 readme = "README.md"
 packages = [{include = "wordnet_hearing_test"}]
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "3.10.12"
+python = "~3.10.12"
 torch = "^1.13.1"
 torchvision = "^0.14.1"
 torchaudio = "^0.13.1"
-speechbrain = "^0.5.13"
+speechbrain = "^1.0.3"
 sounddevice = "^0.4.6"
 pyaudio = "^0.2.13"
 loguru = "^0.6.0"
@@ -19,7 +20,7 @@ nltk = "^3.8.1"
 spacy = "^3.5.0"
 pydub = "^0.25.1"
 tensorflow-io = "0.34.0"
-tensorflow = "2.15"
+tensorflow = "~2.15"
 transformers = "^4.36.2"
 colorama = "^0.4.6"
 
