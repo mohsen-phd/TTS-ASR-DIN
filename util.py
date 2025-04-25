@@ -1,8 +1,11 @@
 """Utility module for the main script."""
 
+import os
+
 import numpy as np
 import yaml
 from loguru import logger
+from scipy.io import wavfile
 from yaml import YAMLError
 
 from audio_processing.noise import Noise
@@ -40,11 +43,32 @@ def play_stimuli(sound_generator: Vocalizer, snr_db: int, stimuli: str, noise: N
         stimuli (str): The stimuli to play.
         noise (Noise): object to generate noise.
     """
+    save = False
     sound_wave = sound_generator.get_sound(stimuli)
     sound_wave = np.pad(sound_wave, (5000, 5000), "constant", constant_values=(0, 0))
+    if save:
+        save_wave_file(
+            src="media/tts_generated",
+            wave=sound_wave,
+            file_name=f"stimuli_{stimuli.replace(' ', '_')}",
+        )
     noise_signal = noise.generate_noise(sound_wave, snr_db)
     noisy_wave = sound_wave + noise_signal
     play_sound(wave=noisy_wave, fs=22050)
+
+
+def save_wave_file(src: str, wave: np.ndarray, file_name: str):
+    """Save a wave file.
+
+    Args:
+        src (str): save location
+        wave (np.ndarray): numpy array containing the sound wave.
+        file_name (str): stored file name.
+    """
+    if not os.path.exists(src):
+        os.makedirs(src)
+
+    wavfile.write(f"{src}/{file_name}.wav", 22050, wave)
 
 
 def get_test_manager(configs: dict) -> TestManager:
